@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="28px"
+            android:gravity="right">
+            <ImageView
+                android:id="@+id/network"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginRight="15px"
+                android:src="@drawable/no_network" />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="71px"
+                android:textColor="@color/primary_light"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70px"
+            android:layout_marginTop="83px"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/buy_id"
+                    android:layout_width="450px"
+                    android:layout_height="45px"
+                    android:layout_marginLeft="140px"
+                    android:textSize="28px" />
+
+                <TextView
+                    android:id="@+id/consumer"
+                    android:layout_width="450px"
+                    android:layout_height="45px"
+                    android:layout_marginLeft="140px"
+                    android:layout_marginTop="30px"
+                    android:textSize="28px" />
+
+                <TextView
+                    android:id="@+id/seller"
+                    android:layout_width="450px"
+                    android:layout_height="45px"
+                    android:layout_marginLeft="140px"
+                    android:layout_marginTop="30px"
+                    android:textSize="28px" />
+
+                <TextView
+                    android:id="@+id/volume"
+                    android:layout_width="450px"
+                    android:layout_height="45px"
+                    android:layout_marginLeft="140px"
+                    android:layout_marginTop="30px"
+                    android:textSize="28px" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="47px"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/cancel"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_cancel" />
+
+                    <Button
+                        android:id="@+id/readcard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10px"
+                        android:background="@drawable/selector_readcard" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10px"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/recapture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_capture" />
+
+                    <Button
+                        android:id="@+id/submit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10px"
+                        android:background="@drawable/selector_submit" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <SurfaceView
+                android:id="@+id/surfaceView"
+                android:layout_width="614px"
+                android:layout_height="459px"
+                android:layout_marginLeft="22dp" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
