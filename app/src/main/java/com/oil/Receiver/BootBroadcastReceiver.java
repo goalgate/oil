@@ -21,6 +21,4 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
             context.startActivity(intent2);
         }
     }
-
-
 }
