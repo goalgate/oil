@@ -19,7 +19,6 @@
  */
 package cbdi.drv.fingerprint;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -57,7 +56,7 @@ public class UsbController {
 
     private byte[] m_abyTransferBuf;
     private boolean m_bInit = false;
-    private UsbDevice   m_usbDevice;
+    private UsbDevice m_usbDevice;
     private UsbDeviceConnection m_usbConn = null;
     private UsbInterface m_usbIf = null;
     private UsbEndpoint m_epIN = null;
@@ -69,11 +68,12 @@ public class UsbController {
 	/**
 	 * Activity is needed for onResult
 	 * 
-	 * @param parentActivity
+	 * @param context
 	 */
-	public UsbController(Activity parentActivity, IUsbConnState connectionHandler, int vid, int pid){
+	public UsbController(/*Activity parentActivity*/Context context, IUsbConnState connectionHandler, int vid, int pid){
         mConnectionHandler = connectionHandler;
-		mApplicationContext = parentActivity.getApplicationContext();
+		/*mApplicationContext = parentActivity.getApplicationContext();*/
+		mApplicationContext = context;
 		mUsbManager = (UsbManager) mApplicationContext.getSystemService(Context.USB_SERVICE);
 		VID = vid;
 		PID = pid;

@@ -16,7 +16,7 @@ import java.util.TimerTask;
  * Created by Administrator on 2016/11/30.
  */
 
-public class FingerprintInfo implements Parcelable{
+public class FingerprintInfo implements Parcelable {
     /**
 	 * 
 	 */
@@ -157,7 +157,7 @@ public class FingerprintInfo implements Parcelable{
 
     private String GetErrorMsg(int nErrorCode)
     {
-        String  str = new String("");
+        String str = new String("");
 
         switch(nErrorCode)
         {

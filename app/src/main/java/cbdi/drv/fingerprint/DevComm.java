@@ -1,6 +1,5 @@
 package cbdi.drv.fingerprint;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.SystemClock;
 
@@ -11,7 +10,7 @@ import java.util.Arrays;
  * Created by Administrator on 7/24/13.
  */
 public class DevComm {
-
+	public	static final int MAX_DATA_LEN			= 498;
 	public	static final int GD_RECORD_SIZE			= 498;
 	public	static final int GD_MAX_RECORD_COUNT	= 2000;
 	public	static final int ID_NOTE_SIZE			= 64;
@@ -133,20 +132,20 @@ public class DevComm {
     public byte[]	m_abyPacket2 = new byte[64*1024];
     //--------------------------------------------------//
 
-    private final Context mApplicationContext;
-    private Activity    m_parentAcitivity;
+/*    private final Context mApplicationContext;
+    private Activity    m_parentAcitivity;*/
     private static final int VID = 0x2009;
     private static final int PID = 0x7638;
 
-    private UsbController   m_usbBase;
+    private UsbController m_usbBase;
 
-    public DevComm(Activity parentActivity, IUsbConnState usbConnState){
+    public DevComm(Context context, IUsbConnState usbConnState){
     	
     	DebugManage.DeleteLog();
-    	
+    /*
         m_parentAcitivity = parentActivity;
-        mApplicationContext = parentActivity.getApplicationContext();
-        m_usbBase = new UsbController(parentActivity, usbConnState, VID, PID);
+        mApplicationContext = parentActivity.getApplicationContext();*/
+        m_usbBase = new UsbController(context, usbConnState, VID, PID);
     }
 
     public boolean IsInit(){
@@ -236,7 +235,7 @@ public class DevComm {
     {
     	int		w_nDevInfoLen;
     	boolean	w_bRet;    	
-    	String  w_strTmp;
+    	String w_strTmp;
     	    	
     	InitCmdPacket(CMD_GET_DEVICE_INFO, m_bySrcDeviceID, m_byDstDeviceID, m_abyPacket2, 0);
     	
@@ -312,7 +311,7 @@ public class DevComm {
     {
        	boolean		w_bRet = false;
     	byte[]		w_abyData = new byte[2];
-    	String		w_strTmp;
+    	String w_strTmp;
     	    	
     	//. Assemble command packet
     	w_abyData[0] = LOBYTE((short)p_nTmplNo);
@@ -388,7 +387,7 @@ public class DevComm {
     int	Run_GetModuleSN(String[] p_pstrModuleSN)
     {
     	boolean		w_bRet = false;
-    	String		w_strTmp;
+    	String w_strTmp;
     	
     	//. Assemble command packet
     	InitCmdPacket(CMD_GET_MODULE_SN, m_bySrcDeviceID, m_byDstDeviceID, m_abyPacket2, 0);
@@ -921,7 +920,7 @@ public class DevComm {
         byte[] w_abyPCCmd = new byte[6];
         byte[] w_abyData = new byte[32];
 
-        String  w_strTmp;
+        String w_strTmp;
         boolean w_bRet;
 
         Arrays.fill(w_abyPCCmd, (byte) 0);

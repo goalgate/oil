@@ -2,10 +2,22 @@ package com.oil;
 
 import android.app.Application;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
 import com.blankj.utilcode.util.Utils;
+import com.oil.greendao.DaoMaster;
+import com.oil.greendao.DaoSession;
 import com.ys.myapi.MyManager;
 
 public class AppInit extends Application {
+
+    private DaoMaster.DevOpenHelper mHelper;
+
+    private SQLiteDatabase db;
+
+    private DaoMaster mDaoMaster;
+
+    private DaoSession mDaoSession;
 
     protected static MyManager manager;
 
@@ -33,5 +45,22 @@ public class AppInit extends Application {
         manager.bindAIDLService(this);
 
         Utils.init(getContext());
+
+        setDatabase();
+    }
+
+    private void setDatabase() {
+        mHelper = new DaoMaster.DevOpenHelper(this, "reUpload-db", null);
+        db = mHelper.getWritableDatabase();
+        mDaoMaster = new DaoMaster(db);
+        mDaoSession = mDaoMaster.newSession();
+    }
+
+    public DaoSession getDaoSession() {
+        return mDaoSession;
+    }
+
+    public SQLiteDatabase getDb() {
+        return db;
     }
 }

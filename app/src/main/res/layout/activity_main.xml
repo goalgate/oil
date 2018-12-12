@@ -3,26 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:fitsSystemWindows="true">
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="28px"
-            android:gravity="right">
+            android:gravity="end">
             <ImageView
                 android:id="@+id/network"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:layout_marginRight="15px"
                 android:src="@drawable/no_network" />
 
@@ -41,6 +40,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="40px"
             android:layout_marginLeft="70px"
             android:layout_marginTop="83px"
             android:orientation="horizontal">
@@ -48,36 +48,40 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="end"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/buy_id"
+                    android:id="@+id/tv_QIYOUBIAOHAO"
+                    android:layout_width="450px"
+                    android:paddingLeft="10px"
+                    android:layout_height="45px"
+                    android:textSize="28px" />
+
+                <EditText
+                    android:id="@+id/et_volume"
                     android:layout_width="450px"
                     android:layout_height="45px"
-                    android:layout_marginLeft="140px"
+                    android:paddingLeft="10px"
+                    android:layout_marginTop="30px"
+                    android:background="@null"
+                    android:inputType="number"
+                    android:maxLines="1"
                     android:textSize="28px" />
 
                 <TextView
-                    android:id="@+id/consumer"
+                    android:id="@+id/tv_customer"
+                    android:paddingLeft="10px"
                     android:layout_width="450px"
                     android:layout_height="45px"
-                    android:layout_marginLeft="140px"
                     android:layout_marginTop="30px"
                     android:textSize="28px" />
 
                 <TextView
-                    android:id="@+id/seller"
+                    android:id="@+id/tv_seller"
+                    android:paddingLeft="10px"
                     android:layout_width="450px"
                     android:layout_height="45px"
-                    android:layout_marginLeft="140px"
-                    android:layout_marginTop="30px"
-                    android:textSize="28px" />
-
-                <TextView
-                    android:id="@+id/volume"
-                    android:layout_width="450px"
-                    android:layout_height="45px"
-                    android:layout_marginLeft="140px"
                     android:layout_marginTop="30px"
                     android:textSize="28px" />
 
@@ -89,7 +93,6 @@
 
                     <Button
                         android:id="@+id/cancel"
-
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/selector_cancel" />
@@ -132,10 +135,18 @@
                 android:id="@+id/surfaceView"
                 android:layout_width="614px"
                 android:layout_height="459px"
-                android:layout_marginLeft="22dp" />
+                android:layout_marginLeft="40dp" />
 
 
         </LinearLayout>
+
+        <TextView
+
+            android:text="asdasdasdasd"
+            android:gravity="center"
+            android:id="@+id/tv_tips"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

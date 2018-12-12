@@ -1,5 +1,7 @@
 package com.oil.State;
 
+import android.widget.TextView;
+
 public class State {
 
     public State(Operation operation) {
@@ -20,7 +22,7 @@ public class State {
         this.operation = state;
     }
 
-    public void doNext(){
-        operation.onHandle(this);
+    public void doNext(TextView textView){
+        operation.onHandle(this,textView);
     }
 }

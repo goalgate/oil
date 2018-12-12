@@ -13,4 +13,8 @@ public interface ICardInfo {
     byte[] getWltBuf();
     String cardId();
     String name();
+    String sex();
+    String nation();
+    String birthday();
+    String address();
 }

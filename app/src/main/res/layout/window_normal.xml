@@ -19,7 +19,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="设     置"
+                android:text="系统设置"
                 android:textColor="@color/divider"
                 android:textSize="18sp"
                 android:layout_marginLeft="75dp"
