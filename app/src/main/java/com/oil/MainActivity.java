@@ -24,6 +24,7 @@ import com.oil.Alerts.Alert_Password;
 import com.oil.Alerts.Alert_QYchoose;
 import com.oil.Alerts.Alert_ReadCard;
 import com.oil.Alerts.Alert_Server;
+import com.oil.Alerts.Alert_addxs;
 import com.oil.Alerts.Alert_fingerprintReg;
 import com.oil.Bean.XiaoshourenBean;
 import com.oil.Bean.ZhiwenBean;
@@ -77,10 +78,7 @@ public class MainActivity extends FunctionActivity {
 
     SimpleDateFormat formatter2 = new SimpleDateFormat("yyyyMMddHHmmss");
 
-
     test test = new test();
-
-    XiaoshourenBean xiaoshourenBean = new XiaoshourenBean();
 
     @BindView(R.id.tv_time)
     TextView tv_time;
@@ -130,7 +128,7 @@ public class MainActivity extends FunctionActivity {
 
     @OnClick(R.id.network)
     void option() {
-        ActivityUtils.startActivity(getPackageName(), getPackageName() + ".XiaoShouActivity");
+        ActivityUtils.startActivity(getPackageName(), getPackageName() + ".PersonActivity");
         //alert_password.show();
     }
 
@@ -275,8 +273,6 @@ public class MainActivity extends FunctionActivity {
     public void onsetCardInfo(final ICardInfo cardInfo) {
         this.cardInfo = cardInfo;
         if (getState(CommonState.class)) {
-            //buy_id.setText(config.getString("daid") + formatter2.format(new Date(System.currentTimeMillis())));
-            //volume.setText("90");
             tv_customer.setText(cardInfo.name());
             order.setCardid(cardInfo.cardId());
             order.setGoumaizenhao(config.getString("daid") + formatter2.format(new Date(System.currentTimeMillis())));
@@ -427,7 +423,7 @@ public class MainActivity extends FunctionActivity {
     Alert_Server alert_server;
     Alert_IP alert_ip;
     Alert_Password alert_password;
-
+    Alert_addxs alert_addxs;
 
     private void ready() {
         Observable.interval(2, 60, TimeUnit.SECONDS)
@@ -508,6 +504,7 @@ public class MainActivity extends FunctionActivity {
 
             }
         });
+
 
 
         alert_ip = new Alert_IP(this);

@@ -15,6 +15,7 @@ import com.bigkoo.alertview.OnItemClickListener;
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.oil.Alerts.Alert_addxs;
 import com.oil.Alerts.Alert_fingerprintReg;
 import com.oil.Bean.ZhiwenBean;
 import com.oil.Connect.ConnectImpl;
@@ -54,6 +55,8 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
 
     DaoSession mdaoSession = AppInit.getInstance().getDaoSession();
 
+    Alert_addxs alert_addxs;
+
     @BindView(R.id.id_recyclerview)
     RecyclerView mRecyclerView;
 
@@ -65,7 +68,8 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
 
     @OnClick(R.id.add)
     void xsAdd() {
-
+        alert_addxs.refresh();
+        alert_addxs.show();
     }
 
     @OnClick(R.id.turnback)
@@ -126,6 +130,8 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
             } else {
                 alert_fingerprintReg.getTv_mainInfo().setText("销售人员身份验证没有通过，请使用所选择销售人的身份证进行验证");
             }
+        }else if (alert_addxs.showing()){
+            alert_addxs.cardInfoIn(cardInfo);
         }
     }
 
@@ -155,8 +161,9 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
 
     @Override
     public void onsetCardImg(Bitmap bmp) {
-
-
+        if (alert_addxs.showing()){
+            alert_addxs.headphoto_In(bmp);
+        }
     }
 
     @Override
@@ -170,6 +177,9 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
         alert_fingerprintReg = new Alert_fingerprintReg(this);
         alert_fingerprintReg.fingerRegInit();
 
+
+        alert_addxs = new Alert_addxs(this);
+        alert_addxs.Init();
     }
 
     List<ZhiwenBean> xslist;

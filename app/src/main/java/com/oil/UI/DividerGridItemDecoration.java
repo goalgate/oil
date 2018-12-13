@@ -177,7 +177,6 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
         a.recycle();
-
         this.spanCount = spanCount;
     }
 
@@ -225,7 +224,6 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
-
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
             final int top = child.getTop() - params.topMargin;
             final int bottom = child.getBottom() + params.bottomMargin;
@@ -235,6 +233,10 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
             if (i % spanCount == 0) {
                 int _left = child.getLeft() + params.leftMargin;
                 mDivider.setBounds(_left, top, _left + mDivider.getIntrinsicWidth(), bottom);
+                mDivider.draw(c);
+            }else if(i % spanCount == spanCount-1){
+                int _right = child.getRight();
+                mDivider.setBounds(_right- mDivider.getIntrinsicWidth(), top, _right, bottom);
                 mDivider.draw(c);
             }
             mDivider.setBounds(left, top, right, bottom);
