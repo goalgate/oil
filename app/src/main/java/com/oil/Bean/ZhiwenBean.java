@@ -10,15 +10,19 @@ public class ZhiwenBean {
     @Id(autoincrement = true)
     private Long id;
 
+    private String zhujian;
+
     private String name;
 
     private String cardid;
 
     private int zhiwenId;
 
-    @Generated(hash = 246142860)
-    public ZhiwenBean(Long id, String name, String cardid, int zhiwenId) {
+    @Generated(hash = 1593218266)
+    public ZhiwenBean(Long id, String zhujian, String name, String cardid,
+            int zhiwenId) {
         this.id = id;
+        this.zhujian = zhujian;
         this.name = name;
         this.cardid = cardid;
         this.zhiwenId = zhiwenId;
@@ -58,5 +62,13 @@ public class ZhiwenBean {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getZhujian() {
+        return this.zhujian;
+    }
+
+    public void setZhujian(String zhujian) {
+        this.zhujian = zhujian;
     }
 }

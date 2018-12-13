@@ -48,6 +48,8 @@ public class Order {
         this.zhiwen = zhiwen;
     }
 
+
+
     @Generated(hash = 1105174599)
     public Order() {
     }

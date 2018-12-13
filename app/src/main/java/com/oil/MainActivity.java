@@ -77,7 +77,6 @@ public class MainActivity extends FunctionActivity {
 
     SimpleDateFormat formatter2 = new SimpleDateFormat("yyyyMMddHHmmss");
 
-    SimpleDateFormat formatter3 = new SimpleDateFormat("yyyyMMddHH");
 
     test test = new test();
 
@@ -131,7 +130,7 @@ public class MainActivity extends FunctionActivity {
 
     @OnClick(R.id.network)
     void option() {
-        ActivityUtils.startActivity(getPackageName(), getPackageName() + ".PersonActivity");
+        ActivityUtils.startActivity(getPackageName(), getPackageName() + ".XiaoShouActivity");
         //alert_password.show();
     }
 

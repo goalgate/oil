@@ -5,11 +5,14 @@ import android.util.Log;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.oil.Bean.ZhiwenBean;
 import com.oil.Tools.FileUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import cbdi.drv.card.ICardInfo;
 import io.reactivex.Observer;
@@ -81,6 +84,12 @@ public class ConnectImpl {
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         try {
+                            List<ZhiwenBean> xslist = new ArrayList<ZhiwenBean>();
+                            String[] xsStrings = responseBody.string().split("|");
+                            for(String xs : xsStrings){
+                                String[] detail = xs.split(",");
+                                xslist.add(new ZhiwenBean(null,detail[0],detail[1],detail[3],0));
+                            }
                             Log.e("人员信息", responseBody.string());
                         } catch (IOException e) {
                             e.printStackTrace();

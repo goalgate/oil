@@ -25,9 +25,10 @@ public class ZhiwenBeanDao extends AbstractDao<ZhiwenBean, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Name = new Property(1, String.class, "name", false, "NAME");
-        public final static Property Cardid = new Property(2, String.class, "cardid", false, "CARDID");
-        public final static Property ZhiwenId = new Property(3, int.class, "zhiwenId", false, "ZHIWEN_ID");
+        public final static Property Zhujian = new Property(1, String.class, "zhujian", false, "ZHUJIAN");
+        public final static Property Name = new Property(2, String.class, "name", false, "NAME");
+        public final static Property Cardid = new Property(3, String.class, "cardid", false, "CARDID");
+        public final static Property ZhiwenId = new Property(4, int.class, "zhiwenId", false, "ZHIWEN_ID");
     }
 
 
@@ -44,9 +45,10 @@ public class ZhiwenBeanDao extends AbstractDao<ZhiwenBean, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"ZHIWEN_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"NAME\" TEXT," + // 1: name
-                "\"CARDID\" TEXT," + // 2: cardid
-                "\"ZHIWEN_ID\" INTEGER NOT NULL );"); // 3: zhiwenId
+                "\"ZHUJIAN\" TEXT," + // 1: zhujian
+                "\"NAME\" TEXT," + // 2: name
+                "\"CARDID\" TEXT," + // 3: cardid
+                "\"ZHIWEN_ID\" INTEGER NOT NULL );"); // 4: zhiwenId
     }
 
     /** Drops the underlying database table. */
@@ -64,16 +66,21 @@ public class ZhiwenBeanDao extends AbstractDao<ZhiwenBean, Long> {
             stmt.bindLong(1, id);
         }
  
+        String zhujian = entity.getZhujian();
+        if (zhujian != null) {
+            stmt.bindString(2, zhujian);
+        }
+ 
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(2, name);
+            stmt.bindString(3, name);
         }
  
         String cardid = entity.getCardid();
         if (cardid != null) {
-            stmt.bindString(3, cardid);
+            stmt.bindString(4, cardid);
         }
-        stmt.bindLong(4, entity.getZhiwenId());
+        stmt.bindLong(5, entity.getZhiwenId());
     }
 
     @Override
@@ -85,16 +92,21 @@ public class ZhiwenBeanDao extends AbstractDao<ZhiwenBean, Long> {
             stmt.bindLong(1, id);
         }
  
+        String zhujian = entity.getZhujian();
+        if (zhujian != null) {
+            stmt.bindString(2, zhujian);
+        }
+ 
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(2, name);
+            stmt.bindString(3, name);
         }
  
         String cardid = entity.getCardid();
         if (cardid != null) {
-            stmt.bindString(3, cardid);
+            stmt.bindString(4, cardid);
         }
-        stmt.bindLong(4, entity.getZhiwenId());
+        stmt.bindLong(5, entity.getZhiwenId());
     }
 
     @Override
@@ -106,9 +118,10 @@ public class ZhiwenBeanDao extends AbstractDao<ZhiwenBean, Long> {
     public ZhiwenBean readEntity(Cursor cursor, int offset) {
         ZhiwenBean entity = new ZhiwenBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // cardid
-            cursor.getInt(offset + 3) // zhiwenId
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // zhujian
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // name
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // cardid
+            cursor.getInt(offset + 4) // zhiwenId
         );
         return entity;
     }
@@ -116,9 +129,10 @@ public class ZhiwenBeanDao extends AbstractDao<ZhiwenBean, Long> {
     @Override
     public void readEntity(Cursor cursor, ZhiwenBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setCardid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setZhiwenId(cursor.getInt(offset + 3));
+        entity.setZhujian(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setCardid(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setZhiwenId(cursor.getInt(offset + 4));
      }
     
     @Override

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.oil.Bean.ZhiwenBean;
 import com.oil.PersonActivity;
 import com.oil.R;
 
@@ -15,15 +16,11 @@ import java.util.List;
 public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHolder> {
 
     private Context mContext;
-    private List<String> nameDatas;
-    private List<String> cardidDatas;
-    private List<String> professionalDatas;
+    List<ZhiwenBean> list;
 
-    public RecycleAdapter(Context context, List<String> list1,List<String> list2,List<String> list3) {
+    public RecycleAdapter(Context context, List<ZhiwenBean> list) {
         this.mContext = context;
-        this.nameDatas = list1;
-        cardidDatas = list2;
-        professionalDatas = list3;
+        this.list = list;
     }
 
     @Override
@@ -39,9 +36,8 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position)
     {
-        holder.name.setText(nameDatas.get(position));
-        holder.cardid.setText(cardidDatas.get(position));
-        holder.professional.setText(professionalDatas.get(position));
+        holder.name.setText(list.get(position).getName());
+        holder.cardid.setText(list.get(position).getCardid());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +61,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHo
     @Override
     public int getItemCount()
     {
-        return nameDatas.size();
+        return list.size();
     }
     public interface OnItemClickListener {
         void onClick(int position);
@@ -97,14 +93,13 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHo
 
         TextView name;
         TextView cardid;
-        TextView professional;
+
 
         public MyViewHolder(View view)
         {
             super(view);
             name = (TextView) view.findViewById(R.id.name);
             cardid = (TextView) view.findViewById(R.id.cardid);
-            professional = (TextView)view.findViewById(R.id.professional);
         }
 
     }

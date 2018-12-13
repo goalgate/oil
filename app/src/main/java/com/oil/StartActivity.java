@@ -29,7 +29,6 @@ public class StartActivity extends Activity {
 
     Pattern pattern = Pattern.compile(regEx);
 
-
     @BindView(R.id.dev_prefix)
     TextView dev_prefix;
 

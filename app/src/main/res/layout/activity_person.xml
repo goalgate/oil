@@ -2,80 +2,56 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="30px"
+    android:layout_marginEnd="30px"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-       >
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginRight="70px"
+        android:layout_marginLeft="70px"
+        android:layout_marginBottom="50px"
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/add"
+            android:layout_weight="1"
+            android:text="增加销售人"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-            <!--<TableLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content">-->
-                <!--<TableRow>-->
-                    <!--<TextView />-->
-
-                    <!--<EditText />-->
-
-                    <!--<TextView />-->
-
-                    <!--<EditText />-->
-
-                    <!---->
-
-                <!--</TableRow>-->
-
-
-            <!--</TableLayout>-->
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="2">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+            android:text="销售人管理"
+            android:textSize="25pt"/>
 
+        <Button
 
-            <TextView
-                android:gravity="center"
-                android:layout_weight="1"
-                android:text="销售人姓名"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="28px"/>
+            android:id="@+id/turnback"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="返回"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-
-            <TextView
-                android:gravity="center"
-                android:layout_weight="1"
-                android:text="销售人身份证号"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="28px"/>
-
-            <TextView
-                android:gravity="center"
-                android:layout_weight="1"
-                android:text="销售人职位"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="28px"/>
-
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/id_recyclerview"
-            android:divider="#ffff0000"
-            android:dividerHeight="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </LinearLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/id_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="70px"
+        android:layout_marginLeft="70px"
+        android:divider="#ffff0000"
+        android:dividerHeight="10dp" />
+
+
+
 </LinearLayout>
