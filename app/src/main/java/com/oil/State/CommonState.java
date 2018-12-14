@@ -10,7 +10,7 @@ public class CommonState extends Operation {
     public void onHandle(State state, TextView textView) {
         FingerprintPresenter.getInstance().fpCancel();
         state.setOperation(new BuyerState());
-        textView.setText("购买人信息已录入，请输入指纹信息");
+        textView.setText("购买人信息已录入，请购买人输入指纹信息");
         FingerprintPresenter.getInstance().fpCaptureImg();
     }
 

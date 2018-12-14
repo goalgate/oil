@@ -141,8 +141,7 @@
         </LinearLayout>
 
         <TextView
-
-            android:text="asdasdasdasd"
+            android:textSize="14pt"
             android:gravity="center"
             android:id="@+id/tv_tips"
             android:layout_width="match_parent"

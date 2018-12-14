@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_marginEnd="10px"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:padding="10px"
+                        android:textSize="14pt"
+                        android:layout_weight="1"
+                        android:hint="输入姓名"
+                        android:id="@+id/tv_xsname"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:padding="10px"
+                        android:textSize="14pt"
+                        android:layout_weight="1"
+                        android:hint="输入性别"
+                        android:id="@+id/tv_xsgender"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:padding="10px"
+                        android:textSize="14pt"
+                        android:layout_weight="1"
+                        android:hint="输入身份证号"
+                        android:id="@+id/tv_xsgcardid"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:padding="10px"
+                        android:textSize="14pt"
+                        android:layout_weight="1"
+                        android:hint="输入民族"
+                        android:id="@+id/tv_xsnation"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:padding="10px"
+                        android:textSize="14pt"
+                        android:layout_weight="1"
+                        android:hint="输入生日年月"
+                        android:id="@+id/tv_xsbirth"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:padding="10px"
+                        android:textSize="14pt"
+                        android:layout_weight="1"
+                        android:hint="输入户籍地址"
+                        android:id="@+id/tv_xshomeaddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <EditText
+                        android:padding="10px"
+                        android:textSize="14pt"
+                        android:layout_weight="1"
+                        android:hint="输入电话"
+                        android:inputType="number"
+                        android:id="@+id/et_xsphone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <EditText
+                        android:padding="10px"
+                        android:textSize="14pt"
+                        android:layout_weight="1"
+                        android:hint="输入籍贯"
+                        android:maxLines="1"
+                        android:id="@+id/et_xshome"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_weight="2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <EditText
+                    android:padding="10px"
+                    android:textSize="14pt"
+                    android:layout_weight="1"
+                    android:id="@+id/et_nowaddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:maxLines="1"
+                    android:hint="请输入现在住址"/>
+
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:padding="10px"
+                        android:textSize="14pt"
+                        android:text="岗位类型"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:id="@+id/checkboxlist"
+                        android:layout_height="match_parent">
+
+
+                        <CheckBox
+                            android:padding="10px"
+                            android:textSize="14pt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="单位负责人"
+                            android:id="@+id/cb_danweifuzeren"
+                            />
+                        <CheckBox
+                            android:padding="10px"
+                            android:textSize="14pt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="法人"
+                            android:id="@+id/cb_faren"
+                            />
+                        <CheckBox
+                            android:padding="10px"
+                            android:textSize="14pt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="总经理"
+                            android:id="@+id/cb_zongjingli"
+                            />
+                        <CheckBox
+                            android:padding="10px"
+                            android:textSize="14pt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="加油工"
+                            android:id="@+id/cb_jiayougong"
+                            />
+
+                        <CheckBox
+                            android:padding="10px"
+                            android:textSize="14pt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="收银员"
+                            android:id="@+id/cb_shouyinyuan" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+
+
+
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_weight="4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/headphoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/default_header" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="4"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btn_xsadd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="增加"
+            android:layout_marginRight="20px"/>
+
+        <Button
+            android:id="@+id/btn_xsrefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="刷新" />
+    </LinearLayout>
+
+
+</LinearLayout>
