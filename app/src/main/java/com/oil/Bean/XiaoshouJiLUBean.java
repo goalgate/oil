@@ -4,6 +4,7 @@ package com.oil.Bean;
 
 public class XiaoshouJiLUBean {
 
+    private String zhujian;
 
     private String sellername;
 
@@ -45,8 +46,13 @@ public class XiaoshouJiLUBean {
         this.salesDate = salesDate;
     }
 
-    public XiaoshouJiLUBean(String sellername, String buyername, String volume, String salesDate) {
+    public XiaoshouJiLUBean() {
 
+    }
+
+    public XiaoshouJiLUBean(String zhujian, String sellername, String buyername, String volume, String salesDate) {
+
+        this.zhujian = zhujian;
         this.sellername = sellername;
         this.buyername = buyername;
         this.volume = volume;

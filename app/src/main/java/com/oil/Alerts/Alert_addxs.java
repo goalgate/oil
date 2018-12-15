@@ -1,10 +1,12 @@
 package com.oil.Alerts;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.bigkoo.alertview.OnItemClickListener;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.oil.Connect.RetrofitGenerator;
+import com.oil.PersonActivity;
 import com.oil.R;
 import com.oil.Tools.FileUtils;
 
@@ -80,6 +83,8 @@ public class Alert_addxs {
 
     CheckBox cb_shouyinyuan;
 
+    ProgressDialog progressDialog;
+
     public Alert_addxs(Context context) {
         this.context = context;
     }
@@ -96,7 +101,7 @@ public class Alert_addxs {
         et_home = (EditText) extView1.findViewById(R.id.et_xshome);
         et_nowaddress = (EditText) extView1.findViewById(R.id.et_nowaddress);
         btn_addxs = (Button) extView1.findViewById(R.id.btn_xsadd);
-        btn_refresh =  (Button) extView1.findViewById(R.id.btn_xsrefresh);
+        btn_refresh = (Button) extView1.findViewById(R.id.btn_xsrefresh);
         iv_headphoto = (ImageView) extView1.findViewById(R.id.headphoto);
 
         checkBoxlist = (LinearLayout) extView1.findViewById(R.id.checkboxlist);
@@ -109,19 +114,19 @@ public class Alert_addxs {
             @Override
             public void onClick(View view) {
                 try {
-                    if(TextUtils.isEmpty(cardInfo.cardId())){
-                        ToastUtils.showLong("请刷身份证录入信息");
-                    }else if (TextUtils.isEmpty(et_home.getText().toString())){
-                        ToastUtils.showLong("请输入籍贯");
-                    }else if (TextUtils.isEmpty(et_nowaddress.getText().toString())){
-                        ToastUtils.showLong("请输入现在住址");
-                    }else if( TextUtils.isEmpty(et_phone.getText().toString()) ){
-                        ToastUtils.showLong("请输入电话号码");
-                    }else{
-                        XSinsert(cardInfo,headphoto);
+                    if (TextUtils.isEmpty(cardInfo.cardId())) {
+
+                    } else if (TextUtils.isEmpty(et_phone.getText().toString())) {
+                        Alarm.getInstance(context).message("请输入电话号码");
+                    } else if (TextUtils.isEmpty(et_home.getText().toString())) {
+                        Alarm.getInstance(context).message("请输入籍贯");
+                    } else if (TextUtils.isEmpty(et_nowaddress.getText().toString())) {
+                        Alarm.getInstance(context).message("请输入现在住址");
+                    } else {
+                        XSinsert(cardInfo, headphoto);
                     }
-                }catch (NullPointerException e){
-                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    Alarm.getInstance(context).message("人员尚未刷取身份证");
                 }
             }
         });
@@ -144,8 +149,8 @@ public class Alert_addxs {
         AddXsView.show();
     }
 
-    public void cardInfoIn(ICardInfo cardInfo){
-        this.cardInfo =cardInfo;
+    public void cardInfoIn(ICardInfo cardInfo) {
+        this.cardInfo = cardInfo;
         tv_xsname.setText(cardInfo.name());
         tv_xssex.setText(cardInfo.sex());
         tv_xscardid.setText(cardInfo.cardId());
@@ -178,22 +183,23 @@ public class Alert_addxs {
         cb_zongjingli.setChecked(false);
         cb_jiayougong.setChecked(false);
         cb_shouyinyuan.setChecked(false);
-
-
     }
 
-    public boolean showing(){
+    public boolean showing() {
         return AddXsView.isShowing();
     }
 
     private SPUtils config = SPUtils.getInstance("config");
-    public void XSinsert(ICardInfo cardInfo, Bitmap bitmap){
+
+
+
+    public void XSinsert(ICardInfo cardInfo, Bitmap bitmap) {
         try {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < checkBoxlist.getChildCount(); i++) {
                 CheckBox cb = (CheckBox) checkBoxlist.getChildAt(i);
                 if (cb.isChecked()) {
-                    sb.append(i+1+",");
+                    sb.append(i + 1 + ",");
                 }
             }
             RetrofitGenerator.getConnectApi().renyuanData(true, "insert", config.getString("daid"),
@@ -206,7 +212,7 @@ public class Alert_addxs {
                     URLEncoder.encode(cardInfo.address(), "GBK"),
                     cardInfo.cardId(),
                     et_phone.getText().toString()
-                    ,sb.substring(0,sb.length()-1).toString(),
+                    , sb.substring(0, sb.length() - 1).toString(),
                     FileUtils.bitmapToBase64(bitmap))
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
@@ -214,32 +220,45 @@ public class Alert_addxs {
                     .subscribe(new Observer<ResponseBody>() {
                         @Override
                         public void onSubscribe(Disposable d) {
-
+                            progressDialog= new ProgressDialog(context);
+                            progressDialog.setMessage("数据获取中，请稍候");
+                            progressDialog.show();
                         }
 
                         @Override
                         public void onNext(ResponseBody responseBody) {
                             try {
-                                ToastUtils.showLong(responseBody.string());
+                                String result = responseBody.string().toString();
+                                if (result.equals("true")) {
+                                    Alarm.getInstance(context).message("人员插入成功");
+                                    refresh();
+                                } else {
+                                    Alarm.getInstance(context).message(result);
+                                }
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                Alarm.getInstance(context).message("IOException");
+                            } catch (NullPointerException e) {
+                                Alarm.getInstance(context).message("NullPointerException ");
                             }
                         }
 
                         @Override
                         public void onError(Throwable e) {
-
+                            Alarm.getInstance(context).message("无法连接到服务器，请检查网络设置");
+                            progressDialog.dismiss();
                         }
 
                         @Override
                         public void onComplete() {
-
+                            progressDialog.dismiss();
                         }
                     });
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e){
-            e.printStackTrace();
+            Alarm.getInstance(context).message("UnsupportedEncodingException");
+        } catch (NullPointerException e) {
+            Alarm.getInstance(context).message("NullPointerException");
+        } catch (StringIndexOutOfBoundsException e) {
+            Alarm.getInstance(context).message("请选择岗位类型");
         }
     }
 }

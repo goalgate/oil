@@ -1,6 +1,7 @@
 package com.oil;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,35 +9,28 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.Button;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.oil.Alerts.Alarm;
 import com.oil.Alerts.Alert_addxs;
 import com.oil.Alerts.Alert_fingerprintReg;
 import com.oil.Bean.ZhiwenBean;
-import com.oil.Connect.ConnectImpl;
 import com.oil.Connect.RetrofitGenerator;
 import com.oil.Func_FingerPrint.mvp.Presenter.FingerprintPresenter;
 import com.oil.Func_FingerPrint.mvp.View.IFingerPrintView2;
 import com.oil.Func_IDCard.mvp.presenter.IDCardPresenter;
 import com.oil.Func_IDCard.mvp.view.IIDCardView;
-import com.oil.Tools.RecycleAdapter;
+import com.oil.Tools.XSRecycleAdapter;
 import com.oil.UI.DividerGridItemDecoration;
 import com.oil.greendao.DaoSession;
-
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -59,6 +53,8 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
     DaoSession mdaoSession = AppInit.getInstance().getDaoSession();
 
     Alert_addxs alert_addxs;
+
+    ProgressDialog progressDialog;
 
     @BindView(R.id.id_recyclerview)
     RecyclerView mRecyclerView;
@@ -119,6 +115,7 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
 
     int fingerprintId;
     ZhiwenBean chooseZhiwenBean;
+
     @Override
     public void onsetCardInfo(ICardInfo cardInfo) {
         if (alert_fingerprintReg.isShowing()) {
@@ -137,7 +134,7 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
             } else {
                 alert_fingerprintReg.getTv_mainInfo().setText("销售人员身份验证没有通过，请使用所选择销售人的身份证进行验证");
             }
-        }else if (alert_addxs.showing()){
+        } else if (alert_addxs.showing()) {
             alert_addxs.cardInfoIn(cardInfo);
         }
     }
@@ -168,7 +165,7 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
 
     @Override
     public void onsetCardImg(Bitmap bmp) {
-        if (alert_addxs.showing()){
+        if (alert_addxs.showing()) {
             alert_addxs.headphoto_In(bmp);
         }
     }
@@ -179,6 +176,7 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
     }
 
     Alert_fingerprintReg alert_fingerprintReg;
+
     private void ready() {
         alert_fingerprintReg = new Alert_fingerprintReg(this);
         alert_fingerprintReg.fingerRegInit();
@@ -189,6 +187,7 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
     List<ZhiwenBean> xslist;
 
     private void initDatas() {
+        swipeRefreshLayout.setRefreshing(true);
         RetrofitGenerator.getConnectApi().renyuanData("list", config.getString("daid"))
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -209,18 +208,20 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
                                 xslist.add(new ZhiwenBean(null, detail[0], detail[1], detail[3], 0));
                             }
                             recycleViewInit();
-
+                            swipeRefreshLayout.setRefreshing(false);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            Alarm.getInstance(PersonActivity.this).message("IOException");
                         } catch (ArrayIndexOutOfBoundsException e) {
-                            e.printStackTrace();
+                            Alarm.getInstance(PersonActivity.this).message("ArrayIndexOutOfBoundsException");
                         } catch (NullPointerException e) {
-                            e.printStackTrace();
+                            Alarm.getInstance(PersonActivity.this).message("NullPointerException");
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Alarm.getInstance(PersonActivity.this).message("无法连接到服务器，请检查网络设置");
+                        swipeRefreshLayout.setRefreshing(false);
 
                     }
 
@@ -231,16 +232,16 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
                 });
     }
 
-    private void recycleViewInit(){
-        final RecycleAdapter adapter = new RecycleAdapter(PersonActivity.this, xslist);
-        adapter.setOnItemClickListener(new RecycleAdapter.OnItemClickListener() {
+    private void recycleViewInit() {
+        final XSRecycleAdapter adapter = new XSRecycleAdapter(PersonActivity.this, xslist);
+        adapter.setOnItemClickListener(new XSRecycleAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
                 alert_fingerprintReg.show();
                 chooseZhiwenBean = xslist.get(position);
             }
         });
-        adapter.setOnItemLongClickListener(new RecycleAdapter.OnItemLongClickListener() {
+        adapter.setOnItemLongClickListener(new XSRecycleAdapter.OnItemLongClickListener() {
             @Override
             public void onLongClick(int position) {
                 new AlertView("确定删除" + xslist.get(position).getName() + "?", null, "取消", new String[]{"确定"}, null, PersonActivity.this, AlertView.Style.Alert, new OnItemClickListener() {
@@ -277,20 +278,27 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
                             @Override
                             public void onNext(ResponseBody responseBody) {
                                 try {
-                                    xslist = new ArrayList<ZhiwenBean>();
-                                    String[] xsStrings = responseBody.string().split("\\|");
-                                    for (String xs : xsStrings) {
-                                        String[] detail = xs.split(",");
-                                        xslist.add(new ZhiwenBean(null, detail[0], detail[1], detail[3], 0));
+                                    if(xslist.size()!=0){
+                                        xslist.clear();
+                                    }
+                                    String result = responseBody.string();
+                                    if(result.equals("err")){
+                                        Alarm.getInstance(PersonActivity.this).message("err出错");
+                                    }else{
+                                        String[] xsStrings = result.split("\\|");
+                                        for (String xs : xsStrings) {
+                                            String[] detail = xs.split(",");
+                                            xslist.add(new ZhiwenBean(null, detail[0], detail[1], detail[3], 0));
+                                        }
                                     }
                                     swipeRefreshLayout.setRefreshing(false);
                                     adapter.notifyDataSetChanged();
                                 } catch (IOException e) {
-                                    e.printStackTrace();
+                                    Alarm.getInstance(PersonActivity.this).message("IOException");
                                 } catch (ArrayIndexOutOfBoundsException e) {
-                                    e.printStackTrace();
+                                    Alarm.getInstance(PersonActivity.this).message("ArrayIndexOutOfBoundsException");
                                 } catch (NullPointerException e) {
-                                    e.printStackTrace();
+                                    Alarm.getInstance(PersonActivity.this).message("NullPointerException");
                                 }
                             }
 
@@ -308,7 +316,8 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
             }
         });
     }
-    public void XSZhuxiao(final String zhujian){
+
+    public void XSZhuxiao(final String zhujian) {
         RetrofitGenerator.getConnectApi().renyuanData("zhuxiao", config.getString("daid"), zhujian)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -316,38 +325,42 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        progressDialog= new ProgressDialog(PersonActivity.this);
+                        progressDialog.setMessage("数据获取中，请稍候");
+                        progressDialog.show();
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         try {
-                            if(responseBody.string().equals("true")){
+                            String result = responseBody.string();
+                            if (result.equals("true")) {
                                 fpp.fpCancel();
-                                List<ZhiwenBean> zw_list = mdaoSession.queryRaw(ZhiwenBean.class,"where zhujian='"+zhujian+"'");
-                                for (ZhiwenBean zhiwenBean: zw_list){
+                                List<ZhiwenBean> zw_list = mdaoSession.queryRaw(ZhiwenBean.class, "where zhujian='" + zhujian + "'");
+                                for (ZhiwenBean zhiwenBean : zw_list) {
                                     mdaoSession.delete(zhiwenBean);
                                     fpp.fpRemoveTmpl(String.valueOf(zhiwenBean.getZhiwenId()));
                                 }
-                                ToastUtils.showLong("已清除成功");
+                                Alarm.getInstance(PersonActivity.this).message("已注销成功");
+                            }else{
+                                Alarm.getInstance(PersonActivity.this).message(result);
                             }
-                        }catch (UnsupportedEncodingException e){
-                            e.printStackTrace();
-                        }catch (IOException e){
-                            e.printStackTrace();
-                        }catch (NullPointerException e){
-                            e.printStackTrace();
+                        } catch (IOException e) {
+                            Alarm.getInstance(PersonActivity.this).message("IOException");
+                        } catch (NullPointerException e) {
+                            Alarm.getInstance(PersonActivity.this).message("NullPointerException");
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Alarm.getInstance(PersonActivity.this).message("连接服务器失败，请检查网络设置");
+                        progressDialog.dismiss();
                     }
 
                     @Override
                     public void onComplete() {
-
+                        progressDialog.dismiss();
                     }
                 });
     }

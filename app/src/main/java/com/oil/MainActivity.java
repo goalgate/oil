@@ -128,7 +128,7 @@ public class MainActivity extends FunctionActivity {
 
     @OnClick(R.id.network)
     void option() {
-        ActivityUtils.startActivity(getPackageName(), getPackageName() + ".PersonActivity");
+        ActivityUtils.startActivity(getPackageName(), getPackageName() + ".XSJLlistActivity");
         //alert_password.show();
     }
 
@@ -216,6 +216,13 @@ public class MainActivity extends FunctionActivity {
                                         }
                                     } catch (IOException e) {
                                         e.printStackTrace();
+                                        Alarm.getInstance(MainActivity.this).message("IOException");
+                                    } catch (ArrayIndexOutOfBoundsException e) {
+                                        e.printStackTrace();
+                                        Alarm.getInstance(MainActivity.this).message("ArrayIndexOutOfBoundsException");
+                                    } catch (NullPointerException e) {
+                                        e.printStackTrace();
+                                        Alarm.getInstance(MainActivity.this).message("NullPointerException");
                                     }
                                 }
 
@@ -235,6 +242,8 @@ public class MainActivity extends FunctionActivity {
                             });
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
+                    Alarm.getInstance(MainActivity.this).message("UnsupportedEncodingException");
+
                 }
             }
         } else {

@@ -49,6 +49,11 @@
             android:theme="@style/ImageTranslucentTheme">
 
         </activity>
+
+        <activity android:name=".XSJLlistActivity"
+            android:theme="@style/ImageTranslucentTheme">
+        </activity>
+
         <activity
             android:name=".StartActivity"
             android:launchMode="singleInstance"

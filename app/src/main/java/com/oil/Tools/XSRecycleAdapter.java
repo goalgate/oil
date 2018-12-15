@@ -8,33 +8,32 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.oil.Bean.ZhiwenBean;
-import com.oil.PersonActivity;
 import com.oil.R;
 
 import java.util.List;
 
-public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHolder> {
+public class XSRecycleAdapter extends RecyclerView.Adapter<XSRecycleAdapter.XSViewHolder> {
 
     private Context mContext;
     List<ZhiwenBean> list;
 
-    public RecycleAdapter(Context context, List<ZhiwenBean> list) {
+    public XSRecycleAdapter(Context context, List<ZhiwenBean> list) {
         this.mContext = context;
         this.list = list;
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public XSViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        MyViewHolder holder = new MyViewHolder(LayoutInflater.from(
-                mContext).inflate(R.layout.layout_itemunit, parent,
+        XSViewHolder holder = new XSViewHolder(LayoutInflater.from(
+                mContext).inflate(R.layout.layout_xsitemunit, parent,
                 false));
         return holder;
     }
 
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position)
+    public void onBindViewHolder(XSViewHolder holder, final int position)
     {
         holder.name.setText(list.get(position).getName());
         holder.cardid.setText(list.get(position).getCardid());
@@ -69,7 +68,6 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHo
 
     OnItemClickListener onItemClickListener;
 
-
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
@@ -88,14 +86,14 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHo
 
 
 
-    class MyViewHolder extends RecyclerView.ViewHolder
+    class XSViewHolder extends RecyclerView.ViewHolder
     {
 
         TextView name;
         TextView cardid;
 
 
-        public MyViewHolder(View view)
+        public XSViewHolder(View view)
         {
             super(view);
             name = (TextView) view.findViewById(R.id.name);
