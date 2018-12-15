@@ -130,6 +130,9 @@ public class XSJLlistActivity extends Activity {
         }
     }
 
+    @OnClick(R.id.btn_turnback) void back(){
+        this.finish();
+    }
     @Override
     protected void onPause() {
         super.onPause();
