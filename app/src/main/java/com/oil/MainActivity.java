@@ -5,18 +5,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.oil.Alerts.Alarm;
 import com.oil.Alerts.Alert_IP;
@@ -25,16 +22,15 @@ import com.oil.Alerts.Alert_QYchoose;
 import com.oil.Alerts.Alert_ReadCard;
 import com.oil.Alerts.Alert_Server;
 import com.oil.Alerts.Alert_addxs;
-import com.oil.Alerts.Alert_fingerprintReg;
-import com.oil.Bean.XiaoshourenBean;
 import com.oil.Bean.ZhiwenBean;
 import com.oil.Connect.RetrofitGenerator;
 import com.oil.Connect.test;
-import com.oil.State.BuyerState;
 import com.oil.State.CommonState;
-import com.oil.State.GetFingerprintState;
-import com.oil.State.SalesState;
+import com.oil.State.PicCheckState;
+import com.oil.State.SalesInState;
 import com.oil.State.State;
+import com.oil.State.WaitFingerPrintState;
+import com.oil.State.WaitUploadState;
 import com.oil.Tools.FileUtils;
 import com.oil.Tools.MyObserver;
 import com.oil.Bean.Order;
@@ -43,18 +39,17 @@ import com.oil.UI.SuperWindow;
 import com.oil.greendao.DaoSession;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cbdi.drv.card.CardInfo;
 import cbdi.drv.card.ICardInfo;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -74,6 +69,8 @@ public class MainActivity extends FunctionActivity {
 
     private DaoSession daoSession = AppInit.getInstance().getDaoSession();
 
+    DaoSession mdaoSession = AppInit.getInstance().getDaoSession();
+
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     SimpleDateFormat formatter2 = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -92,19 +89,23 @@ public class MainActivity extends FunctionActivity {
     @BindView(R.id.tv_QIYOUBIAOHAO)
     TextView tv_QIYOUBIAOHAO;
 
+
+    String string_QIYOUBIAOHAO;
+
     @OnClick(R.id.tv_QIYOUBIAOHAO)
     void chooseQIYOUBIAOHAO() {
         Alert_QYchoose.getInstance(MainActivity.this, new Alert_QYchoose.QYCItemClickListener() {
             @Override
             public void onItemClick(Object o, int position) {
                 if (position == 0) {
+                    string_QIYOUBIAOHAO = "92";
                     tv_QIYOUBIAOHAO.setText("92号汽油");
                 } else if (position == 1) {
+                    string_QIYOUBIAOHAO = "95";
                     tv_QIYOUBIAOHAO.setText("95号汽油");
                 } else if (position == 2) {
+                    string_QIYOUBIAOHAO = "98";
                     tv_QIYOUBIAOHAO.setText("98号汽油");
-                } else if (position == 3) {
-                    tv_QIYOUBIAOHAO.setText("柴油");
                 }
             }
         }).show();
@@ -128,8 +129,13 @@ public class MainActivity extends FunctionActivity {
 
     @OnClick(R.id.network)
     void option() {
+        //ActivityUtils.startActivity(getPackageName(), getPackageName() + ".PersonActivity");
+        alert_password.show();
+    }
+
+    @OnClick(R.id.menu)
+    void menu(){
         ActivityUtils.startActivity(getPackageName(), getPackageName() + ".XSJLlistActivity");
-        //alert_password.show();
     }
 
     @OnClick(R.id.cancel)
@@ -142,13 +148,19 @@ public class MainActivity extends FunctionActivity {
         if (getState(CommonState.class)) {
             idp.readCard();
             Alert_ReadCard.getInstance(this).message("请购买人刷身份证录入信息");
-        } else if (getState(BuyerState.class)) {
-                Alarm.getInstance(this).message("购买人尚未登记指纹数据，请购买人进行单次指纹登记");
-        } else if(getState(GetFingerprintState.class)){
+        } else if (getState(PicCheckState.class)) {
+            Alarm.getInstance(this).message("现场照片不合格，请点击重拍拍取照片");
+        } else if (getState(WaitFingerPrintState.class)) {
+            Alarm.getInstance(this).message("购买人尚未登记指纹数据，请购买人进行单次指纹登记");
+        } else if (getState(SalesInState.class)) {
             idp.readCard();
             Alert_ReadCard.getInstance(this).message("请销售人刷身份证录入信息");
-        } else if(getState(SalesState.class)){
-            Alarm.getInstance(this).message("流程信息录入完毕，请提交信息或点击取消");
+        } else if (getState(WaitUploadState.class)) {
+            if (TextUtils.isEmpty(tv_QIYOUBIAOHAO.getText().toString()) || TextUtils.isEmpty(et_volume.getText().toString())) {
+                Alarm.getInstance(this).message("请检查汽油编号和数量是否已填写完毕");
+            } else {
+                Alarm.getInstance(this).message("流程信息录入完毕，请提交信息或点击取消");
+            }
         }
     }
 
@@ -156,18 +168,25 @@ public class MainActivity extends FunctionActivity {
     Button recapture;
 
     void event_recapture() {
-        if (!getState(CommonState.class)) {
-            pp.setDisplay(surfaceView.getHolder());
-            Observable.timer(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Long>() {
-                        @Override
-                        public void accept(Long aLong) throws Exception {
-                            pp.capture();
-                        }
-                    });
-        } else {
+        if (getState(CommonState.class)) {
             Alarm.getInstance(this).message("请先刷取购买人信息，再选择是否需要重拍");
+        } else if (getState(PicCheckState.class)) {
+            pp.capture();
+        } else {
+            Alarm.getInstance(this).message("现场照片已确定，如人员照片与身份证不符，需点击取消后再次登记");
         }
+//        if (!getState(CommonState.class)) {
+//            pp.setDisplay(surfaceView.getHolder());
+//            Observable.timer(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Consumer<Long>() {
+//                        @Override
+//                        public void accept(Long aLong) throws Exception {
+//                            pp.capture();
+//                        }
+//                    });
+//        } else {
+//            Alarm.getInstance(this).message("请先刷取购买人信息，再选择是否需要重拍");
+//        }
     }
 
     @BindView(R.id.submit)
@@ -175,7 +194,9 @@ public class MainActivity extends FunctionActivity {
 
     @OnClick(R.id.submit)
     void event_submit() {
-        if (getState(SalesState.class)) {
+        order.setSulian(et_volume.getText().toString());
+        order.setQiyoubiaohao(string_QIYOUBIAOHAO);
+        if (getState(WaitUploadState.class)) {
             if (TextUtils.isEmpty(tv_QIYOUBIAOHAO.getText().toString())) {
                 Alarm.getInstance(this).message("请先选择汽油编号再进行提交");
             } else if (TextUtils.isEmpty(et_volume.getText().toString())) {
@@ -231,6 +252,7 @@ public class MainActivity extends FunctionActivity {
                                     Alarm.getInstance(MainActivity.this).messageDelay("连接服务器失败，无法提交数据");
                                     progressDialog.dismiss();
                                     submit.setClickable(true);
+                                    mdaoSession.insert(order);
 
                                 }
 
@@ -255,11 +277,12 @@ public class MainActivity extends FunctionActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        config.put("ServerId", "http://192.168.12.251:8001");
-        //config.put("ServerId", "http://192.168.12.239:7001/daServer/");
         surfaceView = findViewById(R.id.surfaceView);
         ButterKnife.bind(this);
+        AutoUpdate();
         ready();
+        ReUpload();
+
     }
 
     @Override
@@ -285,31 +308,9 @@ public class MainActivity extends FunctionActivity {
             tv_customer.setText(cardInfo.name());
             order.setCardid(cardInfo.cardId());
             order.setGoumaizenhao(config.getString("daid") + formatter2.format(new Date(System.currentTimeMillis())));
-            order.setSulian("90");
             order.setName(cardInfo.name());
-            order.setQiyoubiaohao("95");
             pp.capture();
-
-//            RetrofitGenerator.getConnectApi().getInfo("goumai", cardInfo.cardId(), config.getString("daid"))
-//                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new MyObserver(MainActivity.this, new MyObserver.Callback() {
-//                        @Override
-//                        public void onResponseString(String s) {
-//                            String[] strings = s.split(",");
-//                            buy_id.setText(strings[0]);
-//                            volume.setText(strings[2]);
-//                            name_consumer.setText(cardInfo.name());
-//                            order.setCardid(cardInfo.cardId());
-//                            order.setGoumaizenhao(strings[0]);
-//                            order.setSulian(strings[2]);
-//                            order.setName(cardInfo.name());
-//                            order.setQiyoubiaohao(strings[1]);
-//                            pp.capture();
-//                            state.doNext();
-//                        }
-//                    }));
-//        } else if (getState(BuyerState.class)) {
-        } else if (getState(GetFingerprintState.class)) {
+        } else if (getState(SalesInState.class)) {
             RetrofitGenerator.getConnectApi().getInfo("xiaoshou", cardInfo.cardId(), config.getString("daid"))
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new MyObserver(MainActivity.this, new MyObserver.Callback() {
@@ -347,7 +348,12 @@ public class MainActivity extends FunctionActivity {
 
     @Override
     public void onCaremaText(String s) {
-
+        if (!s.equals("拍照成功")) {
+            tv_tips.setText("现场照片不合格，请点击重拍");
+            Alarm.getInstance(this).message(s);
+        } else {
+            state.doNext(tv_tips);
+        }
     }
 
     @Override
@@ -364,8 +370,7 @@ public class MainActivity extends FunctionActivity {
     public void onSuperOptionType(Button view, int type) {
         superWindow.dismiss();
         if (type == 1) {
-//            idp.readCard();
-//            alert_fingerprintReg.show();
+            ActivityUtils.startActivity(getPackageName(), getPackageName() + ".PersonActivity");
         } else if (type == 2) {
             normalWindow = new NormalWindow(MainActivity.this);
             normalWindow.setOptionTypeListener(MainActivity.this);
@@ -375,16 +380,15 @@ public class MainActivity extends FunctionActivity {
 
     @Override
     public void onText(String msg) {
-        Log.e("sdsds",msg);
 
     }
 
-
     ZhiwenBean xsZhiwenBean;
+
     @Override
     public void onFpSucc(String msg) {
         String fp_id = msg.substring(3, msg.length());
-        xsZhiwenBean =  daoSession.queryRaw(ZhiwenBean.class,"where zhiwen_Id="+fp_id).get(0);
+        xsZhiwenBean = daoSession.queryRaw(ZhiwenBean.class, "where zhiwen_Id=" + fp_id).get(0);
         tv_seller.setText(xsZhiwenBean.getName());
         order.setXiaoshouren(xsZhiwenBean.getName());
         order.setXiaoshourenhao(xsZhiwenBean.getCardid());
@@ -398,7 +402,7 @@ public class MainActivity extends FunctionActivity {
 
     @Override
     public void onCapturing(Bitmap bmp) {
-        if(getState(BuyerState.class)){
+        if (getState(WaitFingerPrintState.class)) {
             order.setZhiwen(FileUtils.bitmapToBase64(bmp));
             Alarm.getInstance(this).message("购买人指纹已记录成功");
             state.doNext(tv_tips);
@@ -418,7 +422,7 @@ public class MainActivity extends FunctionActivity {
     }
 
     private void init() {
-        tv_tips.setText("等待购买人输入信息");
+        tv_tips.setText("请读购买人身份证");
         fpp.fpCancel();
         pp.setDisplay(surfaceView.getHolder());
         order = new Order();
@@ -427,12 +431,28 @@ public class MainActivity extends FunctionActivity {
         tv_customer.setText(null);
         tv_seller.setText(null);
         et_volume.setText(null);
+        string_QIYOUBIAOHAO = null;
+    }
+
+    private void AutoUpdate() {
+
+    }
+
+    private void ReUpload() {
+        List<Order> orderList= mdaoSession.loadAll(Order.class);
+        Log.e("reuploadSize",String.valueOf(orderList.size()));
+        if(orderList.size() > 50 ){
+        //if(orderList.size() == 0 ){
+            Alarm.getInstance(this).message("未上传销售记录已超过50条，请查看网络是否已联通");
+        }
+        for (Order order :orderList){
+            submitData(order);
+        }
     }
 
     Alert_Server alert_server;
     Alert_IP alert_ip;
     Alert_Password alert_password;
-    Alert_addxs alert_addxs;
 
     private void ready() {
         Observable.interval(2, 60, TimeUnit.SECONDS)
@@ -442,7 +462,7 @@ public class MainActivity extends FunctionActivity {
                     @Override
                     public void accept(Long aLong) throws Exception {
                         if (test.testIpPort("www.baidu.com", 80)) {
-                            if (test.testIpPort("61.144.19.121", 88)) {
+                            if (test.testIpPort("14.23.69.2", 1036)) {
                                 MainActivity.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -510,17 +530,13 @@ public class MainActivity extends FunctionActivity {
         alert_server.serverInit(new Alert_Server.Server_Callback() {
             @Override
             public void setNetworkBmp() {
-
+                iv_network.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.network));
             }
         });
-
-
 
         alert_ip = new Alert_IP(this);
         alert_ip.IpviewInit();
         alert_password = new Alert_Password(this);
-
-
         alert_password.PasswordViewInit(new Alert_Password.Callback() {
             @Override
             public void normal_call() {
@@ -535,6 +551,60 @@ public class MainActivity extends FunctionActivity {
 
             }
         });
+    }
+
+    private void submitData(final Order order) {
+        try {
+            RetrofitGenerator.getConnectApi().inputDataGZ(
+                    config.getString("daid"),
+                    "data", order.getCardid(),
+                    URLEncoder.encode(order.getName(), "GBK"),
+                    URLEncoder.encode(order.getGoumaizenhao(), "GBK"),
+                    order.getQiyoubiaohao(),
+                    order.getSulian(),
+                    order.getGoumairenzhaopian(),
+                    order.getCardpic(),
+                    order.getXiaoshourenhao(),
+                    URLEncoder.encode(order.getXiaoshouren(), "GBK"),
+                    order.getZhiwen(), true)
+                    .subscribeOn(Schedulers.single())
+                    .unsubscribeOn(Schedulers.single())
+                    .observeOn(Schedulers.single())
+                    .subscribe(new Observer<ResponseBody>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try {
+                                String s = responseBody.string();
+                                if (s.equals("true")) {
+                                    mdaoSession.delete(order);
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                e.printStackTrace();
+                            } catch (NullPointerException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
 

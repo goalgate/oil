@@ -6,6 +6,7 @@ import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.media.FaceDetector;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
@@ -19,8 +20,15 @@ import com.oil.AppInit;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class PhotoModuleImpl2 implements IPhotoModule, Camera.PreviewCallback{
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
+public class PhotoModuleImpl2 implements IPhotoModule, Camera.PreviewCallback {
     final static String ApplicationName = "PhotoModule_";
     static Camera camera;
     Bitmap bm;
@@ -101,9 +109,37 @@ public class PhotoModuleImpl2 implements IPhotoModule, Camera.PreviewCallback{
         public void onPictureTaken(byte[] data, final Camera camera) {
             camera.stopPreview();
             bm = BitmapFactory.decodeByteArray(data, 0, data.length);
-            callback.onBtnText("拍照成功");
-            callback.onGetPhoto(bm);
-
+            bm = bm.copy(Bitmap.Config.RGB_565, true);
+            Observable.just(bm).flatMap(new Function<Bitmap, ObservableSource<String>>() {
+                @Override
+                public ObservableSource<String> apply(@NonNull Bitmap bitmap) throws Exception {
+                    FaceDetector faceDetector = new FaceDetector(bm.getWidth(), bm.getHeight(), 1);
+                    FaceDetector.Face[] faces = new FaceDetector.Face[1];
+                    int realFaceNum = faceDetector.findFaces(bm, faces);
+                    if (realFaceNum < 1) {
+                        return Observable.just("没有检测到人脸,请点击重拍");
+                    } else if((realFaceNum == 1)){
+                        return Observable.just("拍照成功");
+                    }else{
+                        return Observable.just("人脸检测数量超过一个，请点击重拍");
+                    }
+                }
+            }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(@NonNull String s) throws Exception {
+                            callback.onBtnText(s);
+                            if (s.equals("拍照成功")) {
+                                callback.onGetPhoto(bm);
+                            } else{
+                                camera.startPreview();
+                            }
+                        }
+                    });
+//            camera.stopPreview();
+//            bm = BitmapFactory.decodeByteArray(data, 0, data.length);
+//            callback.onBtnText("拍照成功");
+//            callback.onGetPhoto(bm);
         }
     };
 
@@ -137,7 +173,7 @@ public class PhotoModuleImpl2 implements IPhotoModule, Camera.PreviewCallback{
     @Override
     public void getOneShut(IOnSetListener listener) {
         this.callback = listener;
-        mfaceTask = new PhotoModuleImpl2.FaceTask(global_bytes);
+        mfaceTask = new FaceTask(global_bytes);
         mfaceTask.execute((Void)null);
     }
     public class FaceTask extends AsyncTask<Void, Void, Void> {
@@ -167,7 +203,7 @@ public class PhotoModuleImpl2 implements IPhotoModule, Camera.PreviewCallback{
         }
     }
 
-    PhotoModuleImpl2.FaceTask mfaceTask;
+    FaceTask mfaceTask;
     byte[] global_bytes;
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {

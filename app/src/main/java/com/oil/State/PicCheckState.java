@@ -4,14 +4,14 @@ import android.widget.TextView;
 
 import com.oil.Func_FingerPrint.mvp.Presenter.FingerprintPresenter;
 
-public class BuyerState extends Operation {
+public class PicCheckState extends Operation {
+
 
     @Override
     public void onHandle(State state, TextView textView) {
         FingerprintPresenter.getInstance().fpCancel();
-        state.setOperation(new GetFingerprintState());
-        textView.setText("购买人指纹信息已录入成功，请销售人完成身份验证");
-        FingerprintPresenter.getInstance().fpIdentify();
-
+        state.setOperation(new WaitFingerPrintState());
+        textView.setText("请购买人按指纹");
+        FingerprintPresenter.getInstance().fpCaptureImg();
     }
 }

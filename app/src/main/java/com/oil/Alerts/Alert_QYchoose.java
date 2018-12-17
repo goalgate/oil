@@ -30,7 +30,7 @@ public class Alert_QYchoose {
     private Alert_QYchoose(Context context, final QYCItemClickListener listener) {
         this.context = context;
         alert =   new AlertView("请选择所需的汽油编号", null, "取消",
-                new String[]{"92号汽油","95号汽油","98号汽油","柴油"}, null,
+                new String[]{"92号汽油","95号汽油","98号汽油"}, null,
                 context, AlertView.Style.ActionSheet, new OnItemClickListener() {
             @Override
             public void onItemClick(Object o, int position) {

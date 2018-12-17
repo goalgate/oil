@@ -27,10 +27,12 @@ import com.oil.Func_IDCard.mvp.view.IIDCardView;
 import com.oil.Tools.XSRecycleAdapter;
 import com.oil.UI.DividerGridItemDecoration;
 import com.oil.greendao.DaoSession;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -181,7 +183,12 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
         alert_fingerprintReg = new Alert_fingerprintReg(this);
         alert_fingerprintReg.fingerRegInit();
         alert_addxs = new Alert_addxs(this);
-        alert_addxs.Init();
+        alert_addxs.Init(new Alert_addxs.addxs_CallBack() {
+            @Override
+            public void add_success() {
+                dataRefresh();
+            }
+        });
     }
 
     List<ZhiwenBean> xslist;
@@ -231,9 +238,9 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
                     }
                 });
     }
-
+    XSRecycleAdapter adapter;
     private void recycleViewInit() {
-        final XSRecycleAdapter adapter = new XSRecycleAdapter(PersonActivity.this, xslist);
+        adapter = new XSRecycleAdapter(PersonActivity.this, xslist);
         adapter.setOnItemClickListener(new XSRecycleAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
@@ -244,7 +251,7 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
         adapter.setOnItemLongClickListener(new XSRecycleAdapter.OnItemLongClickListener() {
             @Override
             public void onLongClick(int position) {
-                new AlertView("确定删除" + xslist.get(position).getName() + "?", null, "取消", new String[]{"确定"}, null, PersonActivity.this, AlertView.Style.Alert, new OnItemClickListener() {
+                new AlertView("确定注销" + xslist.get(position).getName() + "?", null, "取消", new String[]{"确定"}, null, PersonActivity.this, AlertView.Style.Alert, new OnItemClickListener() {
                     @Override
                     public void onItemClick(Object o, int position) {
                         if (position == 0) {
@@ -265,54 +272,57 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                RetrofitGenerator.getConnectApi().renyuanData("list", config.getString("daid"))
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<ResponseBody>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onNext(ResponseBody responseBody) {
-                                try {
-                                    if(xslist.size()!=0){
-                                        xslist.clear();
-                                    }
-                                    String result = responseBody.string();
-                                    if(result.equals("err")){
-                                        Alarm.getInstance(PersonActivity.this).message("err出错");
-                                    }else{
-                                        String[] xsStrings = result.split("\\|");
-                                        for (String xs : xsStrings) {
-                                            String[] detail = xs.split(",");
-                                            xslist.add(new ZhiwenBean(null, detail[0], detail[1], detail[3], 0));
-                                        }
-                                    }
-                                    swipeRefreshLayout.setRefreshing(false);
-                                    adapter.notifyDataSetChanged();
-                                } catch (IOException e) {
-                                    Alarm.getInstance(PersonActivity.this).message("IOException");
-                                } catch (ArrayIndexOutOfBoundsException e) {
-                                    Alarm.getInstance(PersonActivity.this).message("ArrayIndexOutOfBoundsException");
-                                } catch (NullPointerException e) {
-                                    Alarm.getInstance(PersonActivity.this).message("NullPointerException");
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                swipeRefreshLayout.setRefreshing(false);
-                                Alarm.getInstance(PersonActivity.this).message("无法连接到服务器，请检查网络设置");
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
-                        });
+                dataRefresh();
+//                RetrofitGenerator.getConnectApi().renyuanData("list", config.getString("daid"))
+//                        .subscribeOn(Schedulers.io())
+//                        .unsubscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(new Observer<ResponseBody>() {
+//                            @Override
+//                            public void onSubscribe(Disposable d) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onNext(ResponseBody responseBody) {
+//                                try {
+//                                    if (xslist.size() != 0) {
+//                                        xslist.clear();
+//                                    }
+//                                    String result = responseBody.string();
+//                                    if (result.equals("err")) {
+//                                        Alarm.getInstance(PersonActivity.this).message("err出错");
+//                                    } else {
+//                                        String[] xsStrings = result.split("\\|");
+//                                        for (String xs : xsStrings) {
+//                                            String[] detail = xs.split(",");
+//                                            xslist.add(new ZhiwenBean(null, detail[0], detail[1], detail[3], 0));
+//                                        }
+//                                    }
+//                                    swipeRefreshLayout.setRefreshing(false);
+//                                    if (adapter != null) {
+//                                        adapter.notifyDataSetChanged();
+//                                    }
+//                                } catch (IOException e) {
+//                                    Alarm.getInstance(PersonActivity.this).message("IOException");
+//                                } catch (ArrayIndexOutOfBoundsException e) {
+//                                    Alarm.getInstance(PersonActivity.this).message("ArrayIndexOutOfBoundsException");
+//                                } catch (NullPointerException e) {
+//                                    Alarm.getInstance(PersonActivity.this).message("NullPointerException");
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onError(Throwable e) {
+//                                swipeRefreshLayout.setRefreshing(false);
+//                                Alarm.getInstance(PersonActivity.this).message("无法连接到服务器，请检查网络设置");
+//                            }
+//
+//                            @Override
+//                            public void onComplete() {
+//                                swipeRefreshLayout.setRefreshing(false);
+//                            }
+//                        });
             }
         });
     }
@@ -325,7 +335,7 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        progressDialog= new ProgressDialog(PersonActivity.this);
+                        progressDialog = new ProgressDialog(PersonActivity.this);
                         progressDialog.setMessage("数据获取中，请稍候");
                         progressDialog.show();
                     }
@@ -341,12 +351,66 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
                                     mdaoSession.delete(zhiwenBean);
                                     fpp.fpRemoveTmpl(String.valueOf(zhiwenBean.getZhiwenId()));
                                 }
-                                Alarm.getInstance(PersonActivity.this).message("已注销成功");
-                            }else{
-                                Alarm.getInstance(PersonActivity.this).message(result);
+                                Alarm.getInstance(PersonActivity.this).messageDelay("已注销成功");
+                                dataRefresh();
+                            } else {
+                                Alarm.getInstance(PersonActivity.this).messageDelay(result);
+                            }
+                        } catch (IOException e) {
+                            Alarm.getInstance(PersonActivity.this).messageDelay("IOException");
+                        } catch (NullPointerException e) {
+                            Alarm.getInstance(PersonActivity.this).messageDelay("NullPointerException");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Alarm.getInstance(PersonActivity.this).messageDelay("连接服务器失败，请检查网络设置");
+                        progressDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        progressDialog.dismiss();
+                    }
+                });
+    }
+
+    private void dataRefresh(){
+        RetrofitGenerator.getConnectApi().renyuanData("list", config.getString("daid"))
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            if (xslist.size() != 0) {
+                                xslist.clear();
+                            }
+                            String result = responseBody.string();
+                            if (result.equals("err")) {
+                                Alarm.getInstance(PersonActivity.this).message("err出错");
+                            } else {
+                                String[] xsStrings = result.split("\\|");
+                                for (String xs : xsStrings) {
+                                    String[] detail = xs.split(",");
+                                    xslist.add(new ZhiwenBean(null, detail[0], detail[1], detail[3], 0));
+                                }
+                            }
+                            swipeRefreshLayout.setRefreshing(false);
+                            if (adapter != null) {
+                                adapter.notifyDataSetChanged();
                             }
                         } catch (IOException e) {
                             Alarm.getInstance(PersonActivity.this).message("IOException");
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            Alarm.getInstance(PersonActivity.this).message("ArrayIndexOutOfBoundsException");
                         } catch (NullPointerException e) {
                             Alarm.getInstance(PersonActivity.this).message("NullPointerException");
                         }
@@ -354,13 +418,13 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
 
                     @Override
                     public void onError(Throwable e) {
-                        Alarm.getInstance(PersonActivity.this).message("连接服务器失败，请检查网络设置");
-                        progressDialog.dismiss();
+                        swipeRefreshLayout.setRefreshing(false);
+                        Alarm.getInstance(PersonActivity.this).message("无法连接到服务器，请检查网络设置");
                     }
 
                     @Override
                     public void onComplete() {
-                        progressDialog.dismiss();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
     }

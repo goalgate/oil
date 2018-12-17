@@ -62,6 +62,8 @@ public class XSRecycleAdapter extends RecyclerView.Adapter<XSRecycleAdapter.XSVi
     {
         return list.size();
     }
+
+
     public interface OnItemClickListener {
         void onClick(int position);
     }
@@ -81,10 +83,6 @@ public class XSRecycleAdapter extends RecyclerView.Adapter<XSRecycleAdapter.XSVi
     public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
         this.onItemLongClickListener = onItemLongClickListener;
     }
-
-
-
-
 
     class XSViewHolder extends RecyclerView.ViewHolder
     {

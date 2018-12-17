@@ -26,7 +26,6 @@ public class NormalWindow extends PopupWindow implements View.OnClickListener{
     Button server;
     Button staticIP;
 
-
     public NormalWindow(Activity activity) {
         mActivity = activity;
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -58,7 +57,6 @@ public class NormalWindow extends PopupWindow implements View.OnClickListener{
 
     private void lightoff() {
         WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
-
         lp.alpha = 0.3f;
         mActivity.getWindow().setAttributes(lp);
     }

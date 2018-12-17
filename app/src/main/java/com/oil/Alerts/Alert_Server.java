@@ -47,6 +47,7 @@ public class Alert_Server {
     private TextView software;
     private TextView ip;
     private Button connect;
+    Server_Callback callback;
 
 
     private ImageView QRview;
@@ -56,6 +57,7 @@ public class Alert_Server {
     }
 
     public void serverInit(final Server_Callback callback) {
+        this.callback = callback;
         ViewGroup extView1 = (ViewGroup) LayoutInflater.from(this.context).inflate(R.layout.inputserver_form, null);
         etName = (EditText) extView1.findViewById(R.id.server_input);
         QRview = (ImageView) extView1.findViewById(R.id.QRimage);
@@ -77,7 +79,6 @@ public class Alert_Server {
                         } else {
                             if (new test().testIpPort(ip.get(0), Integer.parseInt(port.get(0).substring(1, port.get(0).length())))) {
                                 handler.sendEmptyMessage(0x234);
-                                config.put("ServerId", etName.getText().toString());
                             } else {
                                 handler.sendEmptyMessage(0x345);
                             }
@@ -135,6 +136,8 @@ public class Alert_Server {
                     ToastUtils.showLong("服务器地址输入有误，请输入正确的服务器地址");
                     break;
                 case 0x234:
+                    callback.setNetworkBmp();
+                    config.put("ServerId", etName.getText().toString());
                     ToastUtils.showLong("服务器连接成功，新的服务器地址已保存");
                     break;
                 case 0x345:

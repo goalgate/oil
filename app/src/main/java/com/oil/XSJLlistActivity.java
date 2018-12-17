@@ -20,6 +20,7 @@ import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.oil.Alerts.Alarm;
 import com.oil.Bean.XiaoshouJiLUBean;
 import com.oil.Connect.RetrofitGenerator;
@@ -60,7 +61,6 @@ public class XSJLlistActivity extends Activity {
     @BindView(R.id.id_recyclerview)
     RecyclerView mRecyclerView;
 
-
     ProgressDialog progressDialog;
 
     @OnClick(R.id.btn_check)
@@ -86,7 +86,7 @@ public class XSJLlistActivity extends Activity {
                         public void onNext(ResponseBody responseBody) {
                             try {
                                 String result = responseBody.string();
-                                if(xsjlList.size()!=0){
+                                if (xsjlList.size() != 0) {
                                     xsjlList.clear();
                                 }
                                 if (result.equals("err")) {
@@ -100,9 +100,12 @@ public class XSJLlistActivity extends Activity {
                                         xsjlList.add(new XiaoshouJiLUBean(detail[0], detail[1], detail[2], detail[3], detail[4]));
                                     }
                                     adapter = new XSJLRecycleAdapter(XSJLlistActivity.this, xsjlList);
+                                    adapter.setOnItemClickListener(onItemClickListener);
                                     mRecyclerView.setAdapter(adapter);
                                 }
-                                adapter.notifyDataSetChanged();
+                                if (adapter != null) {
+                                    adapter.notifyDataSetChanged();
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                                 Alarm.getInstance(XSJLlistActivity.this).message("IOException");
@@ -130,9 +133,11 @@ public class XSJLlistActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.btn_turnback) void back(){
+    @OnClick(R.id.btn_turnback)
+    void back() {
         this.finish();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -154,4 +159,44 @@ public class XSJLlistActivity extends Activity {
     }
 
 
+    XSJLRecycleAdapter.OnItemClickListener onItemClickListener = new XSJLRecycleAdapter.OnItemClickListener(){
+        @Override
+        public void onClick(int position) {
+            RetrofitGenerator.getConnectApi().xsRecordData("detail",config.getString("daid"),xsjlList.get(position).getZhujian())
+                    .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ResponseBody>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try{
+                                String result = responseBody.string();
+                                ToastUtils.showLong(result);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Alarm.getInstance(XSJLlistActivity.this).message("IOException");
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                e.printStackTrace();
+                                Alarm.getInstance(XSJLlistActivity.this).message("ArrayIndexOutOfBoundsException");
+                            } catch (NullPointerException e) {
+                                e.printStackTrace();
+                                Alarm.getInstance(XSJLlistActivity.this).message("NullPointerException");
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Alarm.getInstance(XSJLlistActivity.this).message("无法连接到服务器，请检查网络设置");
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
+    };
 }

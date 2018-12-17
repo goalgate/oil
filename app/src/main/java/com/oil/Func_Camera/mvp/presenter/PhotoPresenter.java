@@ -5,6 +5,7 @@ import android.view.SurfaceHolder;
 
 import com.oil.Func_Camera.mvp.module.IPhotoModule;
 import com.oil.Func_Camera.mvp.module.PhotoModuleImpl;
+import com.oil.Func_Camera.mvp.module.PhotoModuleImpl2;
 import com.oil.Func_Camera.mvp.view.IPhotoView;
 
 
@@ -74,7 +75,7 @@ public class PhotoPresenter {
         this.view = view;
     }
 
-    IPhotoModule photoModule = new PhotoModuleImpl();
+    IPhotoModule photoModule = new PhotoModuleImpl2();
 
     public void initCamera(){
         photoModule.initCamera();

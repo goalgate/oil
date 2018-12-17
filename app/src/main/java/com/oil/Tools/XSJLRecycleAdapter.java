@@ -40,6 +40,14 @@ public class XSJLRecycleAdapter extends RecyclerView.Adapter<XSJLRecycleAdapter.
         holder.tv_goumairen.setText(list.get(position).getBuyername());
         holder.tv_qiyoushuliang.setText(list.get(position).getVolume());
         holder.tv_goumairiqi.setText(list.get(position).getSalesDate());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickListener != null){
+                    onItemClickListener.onClick(position);
+                }
+            }
+        });
 
     }
 
@@ -49,7 +57,15 @@ public class XSJLRecycleAdapter extends RecyclerView.Adapter<XSJLRecycleAdapter.
         return list.size();
     }
 
+    public interface OnItemClickListener {
+        void onClick(int position);
+    }
 
+    XSJLRecycleAdapter.OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(XSJLRecycleAdapter.OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
 
 
 
@@ -71,6 +87,7 @@ public class XSJLRecycleAdapter extends RecyclerView.Adapter<XSJLRecycleAdapter.
             tv_qiyoushuliang = (TextView) view.findViewById(R.id.tv_qiyoushuliang);
             tv_goumairiqi = (TextView) view.findViewById(R.id.tv_goumairiqi);
         }
+
 
     }
 }

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
+import com.blankj.utilcode.util.RegexUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.oil.Connect.RetrofitGenerator;
@@ -89,7 +90,7 @@ public class Alert_addxs {
         this.context = context;
     }
 
-    public void Init() {
+    public void Init(final addxs_CallBack listener) {
         ViewGroup extView1 = (ViewGroup) LayoutInflater.from(this.context).inflate(R.layout.addxs_form, null);
         tv_xsname = (TextView) extView1.findViewById(R.id.tv_xsname);
         tv_xssex = (TextView) extView1.findViewById(R.id.tv_xsgender);
@@ -118,12 +119,14 @@ public class Alert_addxs {
 
                     } else if (TextUtils.isEmpty(et_phone.getText().toString())) {
                         Alarm.getInstance(context).message("请输入电话号码");
+                    } else if (!RegexUtils.isMobileSimple(et_phone.getText().toString())){
+                        Alarm.getInstance(context).message("电话号码格式不正确，请重输");
                     } else if (TextUtils.isEmpty(et_home.getText().toString())) {
                         Alarm.getInstance(context).message("请输入籍贯");
                     } else if (TextUtils.isEmpty(et_nowaddress.getText().toString())) {
                         Alarm.getInstance(context).message("请输入现在住址");
                     } else {
-                        XSinsert(cardInfo, headphoto);
+                        XSinsert(cardInfo, headphoto,listener);
                     }
                 } catch (NullPointerException e) {
                     Alarm.getInstance(context).message("人员尚未刷取身份证");
@@ -191,9 +194,7 @@ public class Alert_addxs {
 
     private SPUtils config = SPUtils.getInstance("config");
 
-
-
-    public void XSinsert(ICardInfo cardInfo, Bitmap bitmap) {
+    public void XSinsert(ICardInfo cardInfo, Bitmap bitmap, final addxs_CallBack listener) {
         try {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < checkBoxlist.getChildCount(); i++) {
@@ -232,6 +233,7 @@ public class Alert_addxs {
                                 if (result.equals("true")) {
                                     Alarm.getInstance(context).message("人员插入成功");
                                     refresh();
+                                    listener.add_success();
                                 } else {
                                     Alarm.getInstance(context).message(result);
                                 }
@@ -260,5 +262,9 @@ public class Alert_addxs {
         } catch (StringIndexOutOfBoundsException e) {
             Alarm.getInstance(context).message("请选择岗位类型");
         }
+    }
+
+    public interface addxs_CallBack{
+        void add_success();
     }
 }

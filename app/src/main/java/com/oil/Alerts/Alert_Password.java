@@ -22,7 +22,7 @@ public class Alert_Password {
     public void PasswordViewInit(final Callback callback) {
         ViewGroup passwordView = (ViewGroup) LayoutInflater.from(this.context).inflate(R.layout.inputpassword_form, null);
         passwordInputView = (PasswordInputView) passwordView.findViewById(R.id.passwordInputView);
-        passwordAlert = new AlertView("请输入密码以进入设置界面", null, "取消", new String[]{"确定"}, null, this.context, AlertView.Style.Alert, new OnItemClickListener() {
+        passwordAlert = new AlertView("请输入密码", null, "取消", new String[]{"确定"}, null, this.context, AlertView.Style.Alert, new OnItemClickListener() {
             @Override
             public void onItemClick(Object o, int position) {
                 if (position == 0) {

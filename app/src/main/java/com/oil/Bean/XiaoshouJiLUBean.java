@@ -50,6 +50,15 @@ public class XiaoshouJiLUBean {
 
     }
 
+    public void setZhujian(String zhujian) {
+        this.zhujian = zhujian;
+    }
+
+    public String getZhujian() {
+
+        return zhujian;
+    }
+
     public XiaoshouJiLUBean(String zhujian, String sellername, String buyername, String volume, String salesDate) {
 
         this.zhujian = zhujian;

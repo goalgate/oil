@@ -4,13 +4,14 @@ import android.widget.TextView;
 
 import com.oil.Func_FingerPrint.mvp.Presenter.FingerprintPresenter;
 
-public class SalesState extends Operation{
+public class WaitFingerPrintState extends Operation{
 
 
     @Override
     public void onHandle(State state, TextView textView) {
         FingerprintPresenter.getInstance().fpCancel();
-        state.setOperation(new CommonState());
-        textView.setText("等待购买人输入信息");
+        state.setOperation(new SalesInState());
+        textView.setText("请销售人员认证身份（读身份证或指纹识别）");
+        FingerprintPresenter.getInstance().fpIdentify();
     }
 }

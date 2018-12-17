@@ -32,4 +32,7 @@
     <color name="divider">#BDBDBD</color>
     <color name="Grey">#BEBEBE</color>
     <color name="LightGray">#D3D3D3</color>
+    <color name="tips_textColor">#275086</color>
+
+
 </resources>
