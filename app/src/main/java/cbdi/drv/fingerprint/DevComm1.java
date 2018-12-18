@@ -140,7 +140,7 @@ public class DevComm1 {
     public byte[]	m_abyPacket2 = new byte[64 * 1024];
     //--------------------------------------------------//
 
-    private final Context mApplicationContext;
+//    private final Context mApplicationContext;
     private Activity m_parentAcitivity;
     private static final int VID = 0x2009;
     private static final int PID = 0x7638;
@@ -161,12 +161,12 @@ public class DevComm1 {
     // Connection
     public byte m_nConnected;	// 0 : Not Connected, 1 : ttyUART, 2 : USB
 
-    public DevComm1(Activity parentActivity, IUsbConnState usbConnState){
-        m_parentAcitivity = parentActivity;
-        mApplicationContext = parentActivity.getApplicationContext();
+    public DevComm1(Context context, IUsbConnState usbConnState){
+//        m_parentAcitivity = parentActivity;
+//        mApplicationContext = parentActivity.getApplicationContext();
 
         // usb init
-        m_usbBase = new UsbController(parentActivity, usbConnState, VID, PID);
+        m_usbBase = new UsbController(context, usbConnState, VID, PID);
 
         // init variables
         m_nConnected = 0;

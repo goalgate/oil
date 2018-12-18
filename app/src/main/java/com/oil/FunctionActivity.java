@@ -2,7 +2,10 @@ package com.oil;
 
 import android.os.Bundle;
 import android.view.SurfaceView;
+
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.BarUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.oil.Func_Camera.mvp.presenter.PhotoPresenter;
 import com.oil.Func_Camera.mvp.view.IPhotoView;
 import com.oil.Func_FingerPrint.mvp.Presenter.FingerprintPresenter;
@@ -29,8 +32,11 @@ public abstract class FunctionActivity extends RxActivity implements IPhotoView,
         BarUtils.setStatusBarVisibility(this,false);
         idp.idCardOpen();
         pp.initCamera();
-        fpp.fpInit(this);
+        fpp.fpInit(AppInit.getContext());
         fpp.fpOpen();
+        if (SPUtils.getInstance("config").getBoolean("firstUseFp", true)) {
+            fpp.fpRemoveAll();
+        }
     }
 
     @Override

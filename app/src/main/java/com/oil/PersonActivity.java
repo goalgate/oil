@@ -360,6 +360,9 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
                             Alarm.getInstance(PersonActivity.this).messageDelay("IOException");
                         } catch (NullPointerException e) {
                             Alarm.getInstance(PersonActivity.this).messageDelay("NullPointerException");
+                        } catch (IndexOutOfBoundsException e){
+                            Alarm.getInstance(PersonActivity.this).messageDelay("IndexOutOfBoundsException");
+
                         }
                     }
 

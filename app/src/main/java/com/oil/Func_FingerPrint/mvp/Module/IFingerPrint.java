@@ -9,7 +9,7 @@ import android.graphics.Bitmap;
  */
 
 public interface IFingerPrint {
-    void onInit(Activity activity, IFPListener2 listener);
+    void onInit(Context context, IFPListener2 listener);
     boolean onOpen(IFPListener2 listener);
     void onClose(IFPListener2 listener);
     void onCancel();

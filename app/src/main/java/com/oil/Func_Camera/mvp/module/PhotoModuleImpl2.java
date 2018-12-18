@@ -77,31 +77,32 @@ public class PhotoModuleImpl2 implements IPhotoModule, Camera.PreviewCallback {
             public void surfaceDestroyed(SurfaceHolder holder) {
                 // 如果camera不为null ,释放摄像头
                 if (camera != null) {
-                    /*        if (isPreview) */
                     camera.setPreviewCallback(null);
                     camera.stopPreview();
                     camera.release();
                     camera = null;
                     Log.e(ApplicationName, "摄像头被释放");
-                    /*                    isPreview = false;*/
                 }
             }
-
         });
     }
 
     @Override
     public void capture(IOnSetListener listener) {
         this.callback = listener;
-        camera.takePicture(new Camera.ShutterCallback() {
-            public void onShutter() {
-                // 按下快门瞬间会执行此处代码
-            }
-        }, new Camera.PictureCallback() {
-            public void onPictureTaken(byte[] data, Camera c) {
-                // 此处代码可以决定是否需要保存原始照片信息
-            }
-        }, myJpegCallback);
+        try {
+            camera.takePicture(new Camera.ShutterCallback() {
+                public void onShutter() {
+                    // 按下快门瞬间会执行此处代码
+                }
+            }, new Camera.PictureCallback() {
+                public void onPictureTaken(byte[] data, Camera c) {
+                    // 此处代码可以决定是否需要保存原始照片信息
+                }
+            }, myJpegCallback);
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
     Camera.PictureCallback myJpegCallback = new Camera.PictureCallback() {

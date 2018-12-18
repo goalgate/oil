@@ -35,8 +35,8 @@ public class FingerprintPresenter {
 
     IFingerPrint fpModule = new FingerPrintImpl();
 
-    public void fpInit(Activity activity){
-        fpModule.onInit(activity,getFpListener());
+    public void fpInit(Context context){
+        fpModule.onInit(context,getFpListener());
     }
 
     public void fpOpen(){

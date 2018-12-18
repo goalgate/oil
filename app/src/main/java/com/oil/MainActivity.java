@@ -69,8 +69,6 @@ public class MainActivity extends FunctionActivity {
 
     private DaoSession daoSession = AppInit.getInstance().getDaoSession();
 
-    DaoSession mdaoSession = AppInit.getInstance().getDaoSession();
-
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     SimpleDateFormat formatter2 = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -252,7 +250,7 @@ public class MainActivity extends FunctionActivity {
                                     Alarm.getInstance(MainActivity.this).messageDelay("连接服务器失败，无法提交数据");
                                     progressDialog.dismiss();
                                     submit.setClickable(true);
-                                    mdaoSession.insert(order);
+                                    daoSession.insert(order);
 
                                 }
 
@@ -387,12 +385,17 @@ public class MainActivity extends FunctionActivity {
 
     @Override
     public void onFpSucc(String msg) {
-        String fp_id = msg.substring(3, msg.length());
-        xsZhiwenBean = daoSession.queryRaw(ZhiwenBean.class, "where zhiwen_Id=" + fp_id).get(0);
-        tv_seller.setText(xsZhiwenBean.getName());
-        order.setXiaoshouren(xsZhiwenBean.getName());
-        order.setXiaoshourenhao(xsZhiwenBean.getCardid());
-        state.doNext(tv_tips);
+        try{
+            String fp_id = msg.substring(3, msg.length());
+            xsZhiwenBean = daoSession.queryRaw(ZhiwenBean.class, "where zhiwen_Id=" + fp_id).get(0);
+            tv_seller.setText(xsZhiwenBean.getName());
+            order.setXiaoshouren(xsZhiwenBean.getName());
+            order.setXiaoshourenhao(xsZhiwenBean.getCardid());
+            state.doNext(tv_tips);
+        }catch (IndexOutOfBoundsException e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -404,7 +407,7 @@ public class MainActivity extends FunctionActivity {
     public void onCapturing(Bitmap bmp) {
         if (getState(WaitFingerPrintState.class)) {
             order.setZhiwen(FileUtils.bitmapToBase64(bmp));
-            Alarm.getInstance(this).message("购买人指纹已记录成功");
+            //Alarm.getInstance(this).message("购买人指纹已记录成功");
             state.doNext(tv_tips);
         }
     }
@@ -439,7 +442,7 @@ public class MainActivity extends FunctionActivity {
     }
 
     private void ReUpload() {
-        List<Order> orderList= mdaoSession.loadAll(Order.class);
+        List<Order> orderList= daoSession.loadAll(Order.class);
         Log.e("reuploadSize",String.valueOf(orderList.size()));
         if(orderList.size() > 50 ){
         //if(orderList.size() == 0 ){
@@ -581,7 +584,7 @@ public class MainActivity extends FunctionActivity {
                             try {
                                 String s = responseBody.string();
                                 if (s.equals("true")) {
-                                    mdaoSession.delete(order);
+                                    daoSession.delete(order);
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();

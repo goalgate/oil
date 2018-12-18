@@ -57,5 +57,6 @@ public class StartActivity extends Activity {
         setContentView(R.layout.device_form);
         ButterKnife.bind(this);
         dev_prefix.setText("800800");
+
     }
 }

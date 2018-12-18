@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.blankj.utilcode.util.Utils;
 import com.oil.greendao.DaoMaster;
 import com.oil.greendao.DaoSession;
+import com.squareup.leakcanary.LeakCanary;
 import com.ys.myapi.MyManager;
 
 public class AppInit extends Application {
@@ -38,6 +39,11 @@ public class AppInit extends Application {
     public void onCreate() {
         super.onCreate();
 
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+
+        LeakCanary.install(this);
         instance = this;
 
         manager = MyManager.getInstance(this);

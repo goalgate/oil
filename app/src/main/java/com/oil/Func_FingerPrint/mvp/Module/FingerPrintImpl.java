@@ -86,11 +86,11 @@ public class FingerPrintImpl implements IFingerPrint {
     }
 
     @Override
-    public void onInit(Activity activity, IFPListener2 fplistener) {
+    public void onInit(Context context, IFPListener2 fplistener) {
         this.listener = fplistener;
-        InitdevPowerControl(activity);
+        InitdevPowerControl(context);
         if (m_usbComm == null) {
-            m_usbComm = new DevComm1(activity, m_IConnectionHandler);
+            m_usbComm = new DevComm1(context, m_IConnectionHandler);
         }
         m_binImage = new byte[1024 * 100];
         m_bmpImage = new byte[1024 * 100];
