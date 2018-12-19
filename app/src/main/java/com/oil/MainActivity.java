@@ -127,12 +127,11 @@ public class MainActivity extends FunctionActivity {
 
     @OnClick(R.id.network)
     void option() {
-        //ActivityUtils.startActivity(getPackageName(), getPackageName() + ".PersonActivity");
         alert_password.show();
     }
 
     @OnClick(R.id.menu)
-    void menu(){
+    void menu() {
         ActivityUtils.startActivity(getPackageName(), getPackageName() + ".XSJLlistActivity");
     }
 
@@ -173,18 +172,7 @@ public class MainActivity extends FunctionActivity {
         } else {
             Alarm.getInstance(this).message("现场照片已确定，如人员照片与身份证不符，需点击取消后再次登记");
         }
-//        if (!getState(CommonState.class)) {
-//            pp.setDisplay(surfaceView.getHolder());
-//            Observable.timer(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new Consumer<Long>() {
-//                        @Override
-//                        public void accept(Long aLong) throws Exception {
-//                            pp.capture();
-//                        }
-//                    });
-//        } else {
-//            Alarm.getInstance(this).message("请先刷取购买人信息，再选择是否需要重拍");
-//        }
+
     }
 
     @BindView(R.id.submit)
@@ -263,7 +251,8 @@ public class MainActivity extends FunctionActivity {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                     Alarm.getInstance(MainActivity.this).message("UnsupportedEncodingException");
-
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         } else {
@@ -385,14 +374,16 @@ public class MainActivity extends FunctionActivity {
 
     @Override
     public void onFpSucc(String msg) {
-        try{
+        try {
             String fp_id = msg.substring(3, msg.length());
             xsZhiwenBean = daoSession.queryRaw(ZhiwenBean.class, "where zhiwen_Id=" + fp_id).get(0);
             tv_seller.setText(xsZhiwenBean.getName());
             order.setXiaoshouren(xsZhiwenBean.getName());
             order.setXiaoshourenhao(xsZhiwenBean.getCardid());
             state.doNext(tv_tips);
-        }catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        } catch (Exception e){
             e.printStackTrace();
         }
 
@@ -442,13 +433,13 @@ public class MainActivity extends FunctionActivity {
     }
 
     private void ReUpload() {
-        List<Order> orderList= daoSession.loadAll(Order.class);
-        Log.e("reuploadSize",String.valueOf(orderList.size()));
-        if(orderList.size() > 50 ){
-        //if(orderList.size() == 0 ){
+        List<Order> orderList = daoSession.loadAll(Order.class);
+        Log.e("reuploadSize", String.valueOf(orderList.size()));
+        if (orderList.size() > 50) {
+            //if(orderList.size() == 0 ){
             Alarm.getInstance(this).message("未上传销售记录已超过50条，请查看网络是否已联通");
         }
-        for (Order order :orderList){
+        for (Order order : orderList) {
             submitData(order);
         }
     }
@@ -456,8 +447,8 @@ public class MainActivity extends FunctionActivity {
     Alert_Server alert_server;
     Alert_IP alert_ip;
     Alert_Password alert_password;
-
     private void ready() {
+
         Observable.interval(2, 60, TimeUnit.SECONDS)
                 .compose(this.<Long>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(Schedulers.io())
@@ -606,6 +597,8 @@ public class MainActivity extends FunctionActivity {
                         }
                     });
         } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

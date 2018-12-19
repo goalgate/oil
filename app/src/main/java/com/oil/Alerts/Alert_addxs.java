@@ -119,17 +119,19 @@ public class Alert_addxs {
 
                     } else if (TextUtils.isEmpty(et_phone.getText().toString())) {
                         Alarm.getInstance(context).message("请输入电话号码");
-                    } else if (!RegexUtils.isMobileSimple(et_phone.getText().toString())){
+                    } else if (!RegexUtils.isMobileSimple(et_phone.getText().toString())) {
                         Alarm.getInstance(context).message("电话号码格式不正确，请重输");
                     } else if (TextUtils.isEmpty(et_home.getText().toString())) {
                         Alarm.getInstance(context).message("请输入籍贯");
                     } else if (TextUtils.isEmpty(et_nowaddress.getText().toString())) {
                         Alarm.getInstance(context).message("请输入现在住址");
                     } else {
-                        XSinsert(cardInfo, headphoto,listener);
+                        XSinsert(cardInfo, headphoto, listener);
                     }
                 } catch (NullPointerException e) {
                     Alarm.getInstance(context).message("人员尚未刷取身份证");
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         });
@@ -221,7 +223,7 @@ public class Alert_addxs {
                     .subscribe(new Observer<ResponseBody>() {
                         @Override
                         public void onSubscribe(Disposable d) {
-                            progressDialog= new ProgressDialog(context);
+                            progressDialog = new ProgressDialog(context);
                             progressDialog.setMessage("数据获取中，请稍候");
                             progressDialog.show();
                         }
@@ -241,6 +243,8 @@ public class Alert_addxs {
                                 Alarm.getInstance(context).message("IOException");
                             } catch (NullPointerException e) {
                                 Alarm.getInstance(context).message("NullPointerException ");
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
 
@@ -261,10 +265,13 @@ public class Alert_addxs {
             Alarm.getInstance(context).message("NullPointerException");
         } catch (StringIndexOutOfBoundsException e) {
             Alarm.getInstance(context).message("请选择岗位类型");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public interface addxs_CallBack{
+    public interface addxs_CallBack {
         void add_success();
     }
+
 }

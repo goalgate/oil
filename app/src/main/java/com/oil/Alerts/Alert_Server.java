@@ -35,20 +35,25 @@ public class Alert_Server {
 
     public static final String REGEX_PORT = ":[0-9]+";
 
-
     private Context context;
 
     private SPUtils config = SPUtils.getInstance("config");
 
     private AlertView inputServerView;
-    private EditText etName;
-    private TextView daid;
-    private TextView mac;
-    private TextView software;
-    private TextView ip;
-    private Button connect;
-    Server_Callback callback;
 
+    private EditText etName;
+
+    private TextView daid;
+
+    private TextView mac;
+
+    private TextView software;
+
+    private TextView ip;
+
+    private Button connect;
+
+    Server_Callback callback;
 
     private ImageView QRview;
 
@@ -72,18 +77,21 @@ public class Alert_Server {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        List<String> ip = RegexUtils.getMatches(REGEX_IP, etName.getText().toString());
-                        List<String> port = RegexUtils.getMatches(REGEX_PORT, etName.getText().toString());
-                        if (!(ip.size() > 0 && port.size() > 0)){
-                            handler.sendEmptyMessage(0x123);
-                        } else {
-                            if (new test().testIpPort(ip.get(0), Integer.parseInt(port.get(0).substring(1, port.get(0).length())))) {
-                                handler.sendEmptyMessage(0x234);
+                        try{
+                            List<String> ip = RegexUtils.getMatches(REGEX_IP, etName.getText().toString());
+                            List<String> port = RegexUtils.getMatches(REGEX_PORT, etName.getText().toString());
+                            if (!(ip.size() > 0 && port.size() > 0)){
+                                handler.sendEmptyMessage(0x123);
                             } else {
-                                handler.sendEmptyMessage(0x345);
+                                if (new test().testIpPort(ip.get(0), Integer.parseInt(port.get(0).substring(1, port.get(0).length())))) {
+                                    handler.sendEmptyMessage(0x234);
+                                } else {
+                                    handler.sendEmptyMessage(0x345);
+                                }
                             }
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
-
                     }
                 }).start();
             }
@@ -115,8 +123,8 @@ public class Alert_Server {
             di.setSoftwareVer(AppUtils.getAppVersionName());
             di.setProject("SZY");
             mBitmap = di.daInfoBmp();
-        } catch (Exception ex) {
-
+        } catch (Exception e){
+            e.printStackTrace();
         }
         if (mBitmap != null) {
             QRview.setImageBitmap(mBitmap);
@@ -149,6 +157,4 @@ public class Alert_Server {
             super.handleMessage(msg);
         }
     };
-
-
 }

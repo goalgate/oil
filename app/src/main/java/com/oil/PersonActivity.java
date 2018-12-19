@@ -222,6 +222,8 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
                             Alarm.getInstance(PersonActivity.this).message("ArrayIndexOutOfBoundsException");
                         } catch (NullPointerException e) {
                             Alarm.getInstance(PersonActivity.this).message("NullPointerException");
+                        } catch (Exception e){
+                            e.printStackTrace();
                         }
                     }
 
@@ -273,56 +275,6 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
             @Override
             public void onRefresh() {
                 dataRefresh();
-//                RetrofitGenerator.getConnectApi().renyuanData("list", config.getString("daid"))
-//                        .subscribeOn(Schedulers.io())
-//                        .unsubscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe(new Observer<ResponseBody>() {
-//                            @Override
-//                            public void onSubscribe(Disposable d) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onNext(ResponseBody responseBody) {
-//                                try {
-//                                    if (xslist.size() != 0) {
-//                                        xslist.clear();
-//                                    }
-//                                    String result = responseBody.string();
-//                                    if (result.equals("err")) {
-//                                        Alarm.getInstance(PersonActivity.this).message("err出错");
-//                                    } else {
-//                                        String[] xsStrings = result.split("\\|");
-//                                        for (String xs : xsStrings) {
-//                                            String[] detail = xs.split(",");
-//                                            xslist.add(new ZhiwenBean(null, detail[0], detail[1], detail[3], 0));
-//                                        }
-//                                    }
-//                                    swipeRefreshLayout.setRefreshing(false);
-//                                    if (adapter != null) {
-//                                        adapter.notifyDataSetChanged();
-//                                    }
-//                                } catch (IOException e) {
-//                                    Alarm.getInstance(PersonActivity.this).message("IOException");
-//                                } catch (ArrayIndexOutOfBoundsException e) {
-//                                    Alarm.getInstance(PersonActivity.this).message("ArrayIndexOutOfBoundsException");
-//                                } catch (NullPointerException e) {
-//                                    Alarm.getInstance(PersonActivity.this).message("NullPointerException");
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onError(Throwable e) {
-//                                swipeRefreshLayout.setRefreshing(false);
-//                                Alarm.getInstance(PersonActivity.this).message("无法连接到服务器，请检查网络设置");
-//                            }
-//
-//                            @Override
-//                            public void onComplete() {
-//                                swipeRefreshLayout.setRefreshing(false);
-//                            }
-//                        });
             }
         });
     }
@@ -362,7 +314,8 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
                             Alarm.getInstance(PersonActivity.this).messageDelay("NullPointerException");
                         } catch (IndexOutOfBoundsException e){
                             Alarm.getInstance(PersonActivity.this).messageDelay("IndexOutOfBoundsException");
-
+                        } catch (Exception e){
+                            e.printStackTrace();
                         }
                     }
 
@@ -416,6 +369,8 @@ public class PersonActivity extends Activity implements IIDCardView, IFingerPrin
                             Alarm.getInstance(PersonActivity.this).message("ArrayIndexOutOfBoundsException");
                         } catch (NullPointerException e) {
                             Alarm.getInstance(PersonActivity.this).message("NullPointerException");
+                        } catch (Exception e){
+                            e.printStackTrace();
                         }
                     }
 

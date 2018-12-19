@@ -115,8 +115,9 @@ public class XSJLlistActivity extends Activity {
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                                 Alarm.getInstance(XSJLlistActivity.this).message("NullPointerException");
+                            } catch (Exception e){
+                                e.printStackTrace();
                             }
-
                         }
 
                         @Override
@@ -184,6 +185,8 @@ public class XSJLlistActivity extends Activity {
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                                 Alarm.getInstance(XSJLlistActivity.this).message("NullPointerException");
+                            } catch (Exception e){
+                                e.printStackTrace();
                             }
                         }
 
